@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src
+END
+gtest-all.cc
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-all.cc
+END
+gtest-filepath.cc
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-filepath.cc
+END
+gtest-internal-inl.h
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-internal-inl.h
+END
+gtest-death-test.cc
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-death-test.cc
+END
+gtest-typed-test.cc
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-typed-test.cc
+END
+gtest.cc
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest.cc
+END
+gtest-test-part.cc
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-test-part.cc
+END
+gtest-port.cc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-port.cc
+END
+gtest-printers.cc
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest-printers.cc
+END
+gtest_main.cc
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/G2/!svn/ver/1735/trunk/ran_xpress_g2/3rdparty/gtest/gtest-1.6.0__stripped/src/gtest_main.cc
+END

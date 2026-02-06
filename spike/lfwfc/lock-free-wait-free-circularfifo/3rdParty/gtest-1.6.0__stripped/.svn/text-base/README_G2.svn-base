@@ -1,0 +1,3 @@
+For G2/Ran_XPress we only need the src + include. The rest was deleted.
+The original gtest can be downloaded from www but a local copy can be 
+found also at OS_BSP_TOOLS/trunk/Tools
