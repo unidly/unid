@@ -1,4 +1,13 @@
-# <a name="main"></a>C++ Core Guidelines
+# <a name="main"></a>Unidly C++ Core Guidelines
+
+This file contains the c++ coding guidelines for all c++ projects of Unidly.io, LCC.
+
+The file has been modified from the original, dated Jul 8, 2025, to reflect the
+project specific changes to the core guidelines for the use of Unidly.io
+
+In most cases, the original text is included, but is ~~ marked with strikethrough~~.
+
+<hr>
 
 Jul 8, 2025
 

@@ -1,0 +1,22 @@
+
+/*
+struct Unid_block {
+  uint32_t ip_addr =  0xc0a80001;  // 192.168.0.1
+  uint16_t port =44444;
+  uint32_t sequence = 1234;
+  uint32_t node = 4321;
+  uint64_t unid = 9876;
+  uint32_t size = 6789;;
+}
+*/
+
+table Unid_block_t {
+  ip_addr:uint;
+  port:ushort;
+  sequence:uint;
+  node:uint;
+  unid:ulong;
+  size:uint;
+}
+
+root_type Unid_block_t;

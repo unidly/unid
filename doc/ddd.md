@@ -10,7 +10,29 @@ control.
 * gcc14-g++ - C++ compiler that supports C++20
 * Cppcheck - Static code analyzer
 * Valgrind - Runtime leak analyzer
-* Catch2 - Unit test framework
+
+## Libraries
+Using 3rd party libraries in a project like Unid is problematic. A project
+like Unid, which is designed to provide a long lasting infrastructure, can last
+for decades or beyond. We view Unid as a utility, much like an operating
+system, that is continuously being modified and updated to make use of the
+latest hardware and software technologies.
+
+Open source and even commericial libraries have rather short lifetimes. An
+extremely popular niche library can basically disappear if the creator decides
+to move on - a common occurance. Commercial libraries are often acquired, and
+become less usable commercially, or completely get killed by the acquirer.
+
+Nonetheless, using libraries greatly accelerates the development of system
+software, and improves the performance of a software product.
+
+* [Quill](https://github.com/odygrd/quill) - Logger
+* [Catch2](https://github.com/catchorg/Catch2) - Unit test framework
+
+Serialization
+
+Encryption
+
 
 ## References
 ### Networking
@@ -20,7 +42,7 @@ UDP protocol implemented at the socket level for client/server communications.
 * [sample implementation in c++](https://cppcodetips.wordpress.com/2014/01/29/udp-socket-class-in-c)
 * [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/)
 
-### Consensus algorithm
+### Consensus
 
 Paxos is the default consensus algorithm that is used to provide failover
 
@@ -76,11 +98,21 @@ Unid provides the following features
   * Shared memory IPC with application for passing id
   * Alleviates need for round-trip to RDBMS for DB generated id
 
+### Data
+
+A data manager is responsible for providing access to data by the server
+logic. The data manager is responsible for assuring data consistency ane
+accuracy, and is also responsible for commiting the data when appropriate
+to the hard drive log.
+
 ### Networking
 
 Unid uses the UDP protocol for communication between Unid Servrs and Unid
 Clients. A protocol is implemented that uses the communication channels for
 both communication and failure detection.
+
+While transiting the Internet, data must be secure, encrypted and tamper.
+Modern AES encryption technology is used for these purposes.
 
 
 ### Consensus
@@ -88,11 +120,22 @@ both communication and failure detection.
 A Paxos consensus algirithm is used to detact and adapt the Unid system for
 failures, and the addition of new nodes to the system.
 
+A heartbeat is used indicate life and server health. Heartbeat failure causes
+a Paxos election to select a replacement leader server.
+
+As server nodes are added or removed, the process requires a Paxos approval
+to synchronize the logs.
+
 ### Interprocess Communicaiton
 
-Applications access unique integers using either shared memory IPC for best
-performance, or though IP sockets for applications that are detached from the
-database node.
+Unid Clients reside on a reliable network cluster, ideally on the machine hosts
+the application api. Unids are provided to the application api through sockets,
+or using a shared memory queue.
+
+Applications access using either shared memory IPC for best performance, or
+though IP sockets for applications that are based in a cluster with a single
+Leader Unid Client. (All nodes in a cluster should be provisioned with a Unid
+Client for failover operation.
 
 ### Operation Guarantees
 
