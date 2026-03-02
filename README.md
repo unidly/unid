@@ -2,7 +2,7 @@
 
 ## Project directory structure
 
-'''
+```
 [01;34m.[0m
 |-- CMakeLists.txt
 |-- README.md
@@ -79,6 +79,6 @@
 `-- tree.txt
 
 33 directories, 40 files
-'''
+```
 
 
