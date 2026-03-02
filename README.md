@@ -2,7 +2,7 @@
 
 ## Project directory structure
 
-```
+```bash
 [01;34m.[0m
 |-- CMakeLists.txt
 |-- README.md
