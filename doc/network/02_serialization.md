@@ -26,12 +26,32 @@ by receiving application. It is then deserialized and stored or used as
 needed.
 
 * [FlatBuffers](https://flatbuffers.dev)
-* [ProtocolBuffers](https://protobuf.dev/)
-* [felixguendling/cista](https://github.com/felixguendling/cista)
-* [capnproto/capnproto](https://github.com/capnproto/capnproto)
+
+An alternative for simple data structures is to implement serialization and
+deserialization within the structure as member functions. Given that many
+simple structures have fixed data lengths, constexpr can be used to caluclate
+offset at compile time, and makes the serialization/deserialization processes
+relatively simple.
 
 ### Analysis
 
+Many of the modern c++ serialization libraries follow an approach that is
+taken in Google's flatbuffers library. A schema file is generated that is
+used by a separate compiler to generate code that is included in the main
+program. The generated code provides methods to serialize the data, as well
+as the extract data from the serialized buffer.
 
+We benchmarked flatbuffer as a proxy for other modern software, such as
+Cap`n Proto. We also implemented serialization and deserialization methods
+in the simple structure that represents a Unid_block.
+
+The unid block, like most unid structures, consists entirely of integers
+types of fixed length.
 
 ### Selection of serializer/deserializer for project
+
+When running benchmark tests, the flatbuffer implementation required almost
+1ms to serialize and serialize the structure. The hand-creafted version took
+around 1ns to perform the same operation. For simple structures that consist
+of fixed length integer paramenters, we will use the hand-crafted
+member functions to perform the tasks.

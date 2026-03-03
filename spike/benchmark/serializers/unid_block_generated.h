@@ -19,39 +19,39 @@ struct Unid_block_tBuilder;
 struct Unid_block_t FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef Unid_block_tBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_IP_ADDR = 4,
+    VT_IP = 4,
     VT_PORT = 6,
-    VT_SEQUENCE = 8,
+    VT_SEQ = 8,
     VT_NODE = 10,
-    VT_UNID = 12,
-    VT_SIZE = 14
+    VT_FIRST_UNID = 12,
+    VT_BLOCK_SIZE = 14
   };
-  uint32_t ip_addr() const {
-    return GetField<uint32_t>(VT_IP_ADDR, 0);
+  uint32_t ip() const {
+    return GetField<uint32_t>(VT_IP, 0);
   }
   uint16_t port() const {
     return GetField<uint16_t>(VT_PORT, 0);
   }
-  uint32_t sequence() const {
-    return GetField<uint32_t>(VT_SEQUENCE, 0);
+  uint32_t seq() const {
+    return GetField<uint32_t>(VT_SEQ, 0);
   }
   uint32_t node() const {
     return GetField<uint32_t>(VT_NODE, 0);
   }
-  uint64_t unid() const {
-    return GetField<uint64_t>(VT_UNID, 0);
+  uint64_t first_unid() const {
+    return GetField<uint64_t>(VT_FIRST_UNID, 0);
   }
-  uint32_t size() const {
-    return GetField<uint32_t>(VT_SIZE, 0);
+  uint32_t block_size() const {
+    return GetField<uint32_t>(VT_BLOCK_SIZE, 0);
   }
   bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_IP_ADDR, 4) &&
+           VerifyField<uint32_t>(verifier, VT_IP, 4) &&
            VerifyField<uint16_t>(verifier, VT_PORT, 2) &&
-           VerifyField<uint32_t>(verifier, VT_SEQUENCE, 4) &&
+           VerifyField<uint32_t>(verifier, VT_SEQ, 4) &&
            VerifyField<uint32_t>(verifier, VT_NODE, 4) &&
-           VerifyField<uint64_t>(verifier, VT_UNID, 8) &&
-           VerifyField<uint32_t>(verifier, VT_SIZE, 4) &&
+           VerifyField<uint64_t>(verifier, VT_FIRST_UNID, 8) &&
+           VerifyField<uint32_t>(verifier, VT_BLOCK_SIZE, 4) &&
            verifier.EndTable();
   }
 };
@@ -60,23 +60,23 @@ struct Unid_block_tBuilder {
   typedef Unid_block_t Table;
   ::flatbuffers::FlatBufferBuilder &fbb_;
   ::flatbuffers::uoffset_t start_;
-  void add_ip_addr(uint32_t ip_addr) {
-    fbb_.AddElement<uint32_t>(Unid_block_t::VT_IP_ADDR, ip_addr, 0);
+  void add_ip(uint32_t ip) {
+    fbb_.AddElement<uint32_t>(Unid_block_t::VT_IP, ip, 0);
   }
   void add_port(uint16_t port) {
     fbb_.AddElement<uint16_t>(Unid_block_t::VT_PORT, port, 0);
   }
-  void add_sequence(uint32_t sequence) {
-    fbb_.AddElement<uint32_t>(Unid_block_t::VT_SEQUENCE, sequence, 0);
+  void add_seq(uint32_t seq) {
+    fbb_.AddElement<uint32_t>(Unid_block_t::VT_SEQ, seq, 0);
   }
   void add_node(uint32_t node) {
     fbb_.AddElement<uint32_t>(Unid_block_t::VT_NODE, node, 0);
   }
-  void add_unid(uint64_t unid) {
-    fbb_.AddElement<uint64_t>(Unid_block_t::VT_UNID, unid, 0);
+  void add_first_unid(uint64_t first_unid) {
+    fbb_.AddElement<uint64_t>(Unid_block_t::VT_FIRST_UNID, first_unid, 0);
   }
-  void add_size(uint32_t size) {
-    fbb_.AddElement<uint32_t>(Unid_block_t::VT_SIZE, size, 0);
+  void add_block_size(uint32_t block_size) {
+    fbb_.AddElement<uint32_t>(Unid_block_t::VT_BLOCK_SIZE, block_size, 0);
   }
   explicit Unid_block_tBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -91,18 +91,18 @@ struct Unid_block_tBuilder {
 
 inline ::flatbuffers::Offset<Unid_block_t> CreateUnid_block_t(
     ::flatbuffers::FlatBufferBuilder &_fbb,
-    uint32_t ip_addr = 0,
+    uint32_t ip = 0,
     uint16_t port = 0,
-    uint32_t sequence = 0,
+    uint32_t seq = 0,
     uint32_t node = 0,
-    uint64_t unid = 0,
-    uint32_t size = 0) {
+    uint64_t first_unid = 0,
+    uint32_t block_size = 0) {
   Unid_block_tBuilder builder_(_fbb);
-  builder_.add_unid(unid);
-  builder_.add_size(size);
+  builder_.add_first_unid(first_unid);
+  builder_.add_block_size(block_size);
   builder_.add_node(node);
-  builder_.add_sequence(sequence);
-  builder_.add_ip_addr(ip_addr);
+  builder_.add_seq(seq);
+  builder_.add_ip(ip);
   builder_.add_port(port);
   return builder_.Finish();
 }

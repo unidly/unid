@@ -1,22 +1,21 @@
-
-/*
+/* C++ Structure */
 struct Unid_block {
-  uint32_t ip_addr =  0xc0a80001;  // 192.168.0.1
-  uint16_t port =44444;
-  uint32_t sequence = 1234;
-  uint32_t node = 4321;
-  uint64_t unid = 9876;
-  uint32_t size = 6789;;
+  uint32_t ip;
+  uint16_t port;
+  uint32_t seq;
+  uint32_t node;
+  uint64_t first_unid;
+  uint32_t block_size;
 }
-*/
 
+/* Flatbuffers table */
 table Unid_block_t {
-  ip_addr:uint;
+  ip:uint;
   port:ushort;
-  sequence:uint;
+  seq:uint;
   node:uint;
-  unid:ulong;
-  size:uint;
+  first_unid:ulong;
+  block_size:uint;
 }
 
 root_type Unid_block_t;

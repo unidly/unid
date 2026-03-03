@@ -1,47 +1,200 @@
+// gcc14-g++ flatbuffers.cpp -std=c++23-lbenchmark -l pthread -o flatbuffers
 /**
  * @file
  * @brief Simple performance benchmarks using Google's FlatBuffers library
+ *
+ * This benchmarks a flatbuffers based serializer/deserializer of a simple
+ * structure data. The benchmark uses Google's benchmark library to do the
+ * tests.
+ *
+ * Run cppserial for a benchmark for custom implementation
+ * Run capnprotocol for a benchmark using Cap'nProto implementation
  */
+
+#include <benchmark/benchmark.h>
 
 #include <iostream>
 
 #include "unid_block_generated.h"
 
 struct Unid_block {
-  uint32_t ip_addr = 0xc0a80001;  // 192.168.0.1
-  uint16_t port = 44444;
-  uint32_t sequence = 1234;
-  uint32_t node = 4321;
-  uint64_t unid = 9876;
-  uint32_t size = 6789;
+  uint32_t ip;         /**< Destination IPv4 address **/
+  uint16_t port;       /**< Destination port **/
+  uint32_t seq;        /**< Sequence number **/
+  uint32_t node;       /**< Node identifier **/
+  uint64_t first_unid; /**< First unid in block **/
+  uint32_t block_size; /**< Number of unids in block **/
+
+  // Offsets for deserialize and the total buffer size needed
+  static constexpr int ip_offset = 0;
+  static constexpr int port_offset = sizeof(ip);
+  static constexpr int seq_offset = port_offset + sizeof(port);
+  static constexpr int node_offset = seq_offset + sizeof(seq);
+  static constexpr int first_unid_offset = node_offset + sizeof(node);
+  static constexpr int block_size_offset =
+      first_unid_offset + sizeof(first_unid);
+  static constexpr int buf_size = block_size_offset + sizeof(block_size);
+
+  /**
+   * @brief Serializes the structure into a buffer
+   *
+   * Efficently creates a serialized buffer containing the structure data. The
+   * byte order in the buffer is network order (little-endian). Any padding in
+   * the structure for alignment purposes is NOT serialized. This function
+   * assumes the host architecture is Little-endian, so we byte swap where
+   * needed.
+   *
+   * Caller can obtain the size of the serialized structure by calling
+   * accessing the structure member value buf_size.
+   *
+   * @note Requires C++23 for byteswap()
+   *
+   * @return Number of bytes of serialized data in the buffer
+   */
+  std::array<std::byte, buf_size> serialize() {
+    // Convert structure members to network order
+    auto ip_no = std::byteswap(ip);
+    auto port_no = std::byteswap(port);
+    auto seq_no = std::byteswap(seq);
+    auto node_no = std::byteswap(node);
+    auto first_unid_no = std::byteswap(first_unid);
+    auto block_size_no = std::byteswap(block_size);
+
+    // Serialize structure members
+    std::array<std::byte, sizeof(ip)> ip_arr =
+        std::bit_cast<std::array<std::byte, 4>>(ip_no);
+
+    std::array<std::byte, sizeof(port)> port_arr =
+        std::bit_cast<std::array<std::byte, sizeof(port)>>(port_no);
+
+    std::array<std::byte, sizeof(seq)> seq_arr =
+        std::bit_cast<std::array<std::byte, sizeof(seq)>>(seq_no);
+
+    std::array<std::byte, sizeof(node)> node_arr =
+        std::bit_cast<std::array<std::byte, sizeof(node)>>(node_no);
+
+    std::array<std::byte, sizeof(first_unid)> first_unid_arr =
+        std::bit_cast<std::array<std::byte, sizeof(first_unid)>>(first_unid_no);
+
+    std::array<std::byte, sizeof(block_size)> block_size_arr =
+        std::bit_cast<std::array<std::byte, sizeof(block_size)>>(block_size_no);
+
+    // Concatenate structure members into a results buffer
+    std::array<std::byte, buf_size> result;
+
+    auto it = std::copy(ip_arr.begin(), ip_arr.end(), result.begin());
+    it = std::copy(port_arr.begin(), port_arr.end(), it);
+    it = std::copy(seq_arr.begin(), seq_arr.end(), it);
+    it = std::copy(node_arr.begin(), node_arr.end(), it);
+    it = std::copy(first_unid_arr.begin(), first_unid_arr.end(), it);
+    std::copy(block_size_arr.begin(), block_size_arr.end(), it);
+
+    return result;
+  }
+
+  /**
+   * @brief Deserializes a buffer into the structure
+   *
+   * Efficiently populates the structure with a serializes stream of bytes
+   * provided in network order. This function assumes the host architecture
+   * is Little-endian so byte swapping is used as needed.
+   *
+   * @note Requires C++23 for byteswap()
+   *
+   * @param[in] buf Pointer to an allocated buffer
+   * @param size[in] buf_size The size allocated (bytes)
+   *
+   * @return Number of bytes of serialized data in the buffer
+   * @throws std::invalid_argument buf_size to small to  hold the data
+   */
+  void deserialize(const std::array<std::byte, buf_size>& buf) {
+    // Test for correct buf_size
+    if (buf.size() != buf_size) {
+      throw std::invalid_argument(
+          "deserialize() buf_size incorrect for struct Unid_block");
+    }
+
+    // Populate the structure data from the buffer
+    // Buffers are always in network order
+    std::memcpy(&ip, buf.data() + ip_offset, sizeof(ip));
+    std::memcpy(&port, buf.data() + port_offset, sizeof(port));
+    std::memcpy(&seq, buf.data() + seq_offset, sizeof(seq));
+    std::memcpy(&node, buf.data() + node_offset, sizeof(node));
+    std::memcpy(&first_unid, buf.data() + first_unid_offset,
+                sizeof(first_unid));
+    std::memcpy(&block_size, buf.data() + block_size_offset,
+                sizeof(block_size));
+
+    // Convert from network to Little-endian
+    ip = std::byteswap(ip);
+    port = std::byteswap(port);
+    seq = std::byteswap(seq);
+    node = std::byteswap(node);
+    first_unid = std::byteswap(first_unid);
+    block_size = std::byteswap(block_size);
+
+    return;
+  }
+
+  void print() {
+    std::cout << "Ip: " << ip << std::endl;
+    std::cout << "Port: " << port << std::endl;
+    std::cout << "Seq: " << seq << std::endl;
+    std::cout << "Node: " << node << std::endl;
+    std::cout << "First unid: " << first_unid << std::endl;
+    std::cout << "Block size: " << block_size << std::endl;
+  }
 };
 
-int main() {
+void BM_MyFunction(benchmark::State& state, Unid_block ub1, Unid_block ub2) {
   // Used to build the flatbuffer
   flatbuffers::FlatBufferBuilder builder;
 
-  // Unis block with defaul dat
-  Unid_block unid_block;
+  for (auto _ : state) {
+    // Auto-generated function emitted from `flatc` and the input
+    // `unid_block.fbs schema
+    auto ub1_t = CreateUnid_block_t(
+        builder, ub1.ip, ub1.port, ub1.seq,
+        ub1.node, ub1.first_unid, ub1.block_size);
 
-  // Auto-generated function emitted from `flatc` and the input
-  // `unid_block.fbs` schema
-  auto unid_block_t = CreateUnid_block_t(
-      builder, unid_block.ip_addr, unid_block.port, unid_block.sequence,
-      unid_block.node, unid_block.unid, unid_block.size);
+    // Finalize the buffer.
+    builder.Finish(ub1_t);
 
-  // Finalize the buffer.
-  builder.Finish(unid_block_t);
+    // Get pointer to the flatbuffer
+    const uint8_t* flatbuffer = builder.GetBufferPointer();
 
-  // Get pointer to the flatbuffer
-  const uint8_t* flatbuffer = builder.GetBufferPointer();
+    const Unid_block_t* ub = GetUnid_block_t(flatbuffer);
 
-  const Unid_block_t* ub = GetUnid_block_t(flatbuffer);
+    ub2.ip = ub->ip();
+    ub2.port = ub->port();
+    ub2.seq = ub->seq();
+    ub2.node = ub->node();
+    ub2.first_unid = ub->first_unid();
+    ub2.block_size = ub->block_size();
 
-  // Display the deserialized data
-  std::cout << "IP address (binary): " << ub->ip_addr() << std::endl;
-  std::cout << "Port: " << ub->port() << std::endl;
-  std::cout << "Sequence: " << ub->sequence() << std::endl;
-  std::cout << "Node: " << ub->node() << std::endl;
-  std::cout << "Unid: " << ub->unid() << std::endl;
-  std::cout << "Size: " << ub->size() << std::endl;
+    // Release the buffer
+    builder.Release();
+  }
+};
+
+int main(int argc, char** argv) {
+  // Unid serialize block
+  Unid_block ub1{
+      0xc0a80001,  // Ip address - uint32 - 192.168.0.1 - +0
+      44444,       // Port - uint16 - hex: 0xad9c - +4
+      1234,        // Seq - uint32 - hex: 0x000004d2 - +6
+      4321,        // Node id - uint32 - hex: 0x000010e1 - +10
+      9876,        // First Unid - uint64 - hex: 0x0000000000002694 - +14
+      6789         // Number of unids - uint32 - hex: 0x00001a85 - +22
+  };
+  // Unid deserialize block
+  Unid_block ub2{0, 0, 0, 0, 0};
+
+  benchmark::Initialize(&argc, argv);
+  benchmark::RegisterBenchmark("BM_Flatbuffer", BM_MyFunction, ub1,
+                               ub2);
+
+  benchmark::RunSpecifiedBenchmarks();
+
+  return 0;
 }
