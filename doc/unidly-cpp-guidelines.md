@@ -21417,11 +21417,9 @@ Also, most real-world projects include code from many sources, so standardizing 
 After many requests for guidance from users, we present a set of rules that you might use if you have no better ideas, but the real aim is consistency, rather than any particular rule set.
 IDEs and tools can help (as well as hinder).
 
-Note that layout is not subject to developer taste. Developers are encouraged to integrate ClangFormat into their code editors, and to
+Note that layout is not subject to developer taste. Developers are required to integrate Clang-Format into their code editors, and to
 have it automatically executed before any file save operation. A .clang-format file is available at the root of all project respositories
 that must be used to define the
-
-The ClangFormat program is used to manage the code file layout. ClangFormat
 
 
 Naming and layout rules:
@@ -21519,7 +21517,7 @@ not possible.
 Readability. Avoidance of "silly mistakes." Avoidance of developer style related arguments.
 
 Developers are required to run Clang-Formt with the project .clang-format specification file by their
-code IDE or editor. Clang-format must be automatically executed prior to any save or write within the editor.
+code IDE or editor. Clang-Format must be automatically executed prior to any save or write within the editor.
 
 ##### Enforcement
 
@@ -21619,7 +21617,7 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 
 ##### Enforcement
 
-???
+Code review.
 
 ### <a name="rl-name"></a>NL.8: Use a consistent naming style
 
@@ -21628,7 +21626,8 @@ The use of `p` for pointer and `x` for a floating-point variable is conventional
 ##### Note
 
 There are many styles and when you use multiple libraries, you can't follow all their different conventions.
-Choose a "house style", but leave "imported" libraries with their original style.
+Choose a "house style", but leave "imported" libraries with their original style. This section illustrates
+the "house style" to be used in all Unidly projects.
 
 ##### Example
 
@@ -21638,39 +21637,26 @@ ISO Standard, use lower case only and digits, separate words with underscores:
 * `vector`
 * `my_map`
 
+We adopt the ISO Standard for are variable names and function/method names.
+
+We modify the ISO Standard, starting each entity with a capital letter for Class names, Enum names, Structure names.
+
 Avoid identifier names that contain double underscores `__` or that start with an underscore followed by a capital letter (e.g., `_Throws`).
 Such identifiers are reserved for the C++ implementation.
-
-##### Example
-
-[Stroustrup](https://www.stroustrup.com/Programming/PPP-style.pdf):
-ISO Standard, but with upper case used for your own types and concepts:
-
-* `int`
-* `vector`
-* `My_map`
-
-##### Example
-
-CamelCase: capitalize each word in a multi-word identifier:
-
-* `int`
-* `vector`
-* `MyMap`
-* `myMap`
-
-Some conventions capitalize the first letter, some don't.
 
 ##### Note
 
 Try to be consistent in your use of acronyms and lengths of identifiers:
+
+Well accepted acronyms may be used as variable names, but in general, do not
+abbreviate words within a variable name.
 
     int mtbf {12};
     int mean_time_between_failures {12}; // make up your mind
 
 ##### Enforcement
 
-Would be possible except for the use of libraries with varying conventions.
+Code review.
 
 ### <a name="rl-all-caps"></a>NL.9: Use `ALL_CAPS` for macro names only
 
@@ -21697,7 +21683,7 @@ In particular, this avoids confusing macros with non-macro symbolic constants (s
 * Flag macros with lower-case letters
 * Flag `ALL_CAPS` non-macro names
 
-### <a name="rl-camel"></a>NL.10: Prefer `underscore_style` names
+### <a name="rl-camel"></a>NL.10: Use `underscore_style` names
 
 ##### Reason
 
@@ -21856,6 +21842,8 @@ Flag departures from the suggested order. There will be a lot of old code that d
 
 ### <a name="rl-knr"></a>NL.17: Use K&R-derived layout
 
+This section is for reference only. Clang-Format is used for layout purposes, and man conflict with this section.
+
 ##### Reason
 
 This is the original C and C++ layout. It preserves vertical space well. It distinguishes different language constructs (such as functions and classes) well.
@@ -21926,6 +21914,8 @@ Do not capitalize function names.
 If you want enforcement, use an IDE to reformat.
 
 ### <a name="rl-ptr"></a>NL.18: Use C++-style declarator layout
+
+This section is for reference only. Clang-Format is used for layout purposes, and man conflict with this section.
 
 ##### Reason
 
@@ -22784,9 +22774,9 @@ When is a class a container? ???
 This section contains a list of tools that directly support adoption of the C++ Core Guidelines. This list is not intended to be an exhaustive list of tools
 that are helpful in writing good C++ code. If a tool is designed specifically to support and links to the C++ Core Guidelines it is a candidate for inclusion.
 
-### <a name="St-clangtidy"></a>Tools: [Clang-tidy](https://clang.llvm.org/extra/clang-tidy/checks/list.html)
+### <a name="St-clangtidy"></a>Tools: [Clang-Tidy](https://clang.llvm.org/extra/clang-tidy/checks/list.html)
 
-Clang-tidy has a set of rules that specifically enforce the C++ Core Guidelines. These rules are named in the pattern `cppcoreguidelines-*`.
+Clang-Tidy has a set of rules that specifically enforce the C++ Core Guidelines. These rules are named in the pattern `cppcoreguidelines-*`.
 
 ### <a name="St-cppcorecheck"></a>Tools: [CppCoreCheck](https://docs.microsoft.com/en-us/visualstudio/code-quality/using-the-cpp-core-guidelines-checkers)
 
