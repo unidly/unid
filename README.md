@@ -72,3 +72,43 @@ database which is a slow operation. For application generation of the UUID,
 it requires a function call that is also much slower than accessing a Unid
 from shared memory.
 
+## Repository structure
+
+The unid repository is a "mono-repository" that contains the development
+environment for the Unid Server, the Unid Client, and the Unild Library. The
+Unid Library is linked with both the Server and Client and contains code that
+is shared between the Server and Client programs.
+
+This repository is located at https://github.com/unidly/unid and is
+not publically accessible.
+
+unid
+  |-- README.md - this file
+  |-- CMakeLists.txt - the project top level CML
+  |-- build/ - top level cmake build directory
+  |-- client/ - the Unid Client code
+  |-- doc/ - the project documentation
+  |-- library/ - the Unid Library (shared classes and data structures)
+  |-- spike/ - simple programs used to benchmark and learn about libs
+  |-- test/ - unit tests
+  |-- tools/ - miscellaneous comman line tools
+
+A separate repository is used to de-couple the Unid Api from the Unid
+software. The Unid Api library is for use by an application that interfaces
+with a Unid Client. This repository is public facing and provides the library
+and documentation, including detailed examples, of how to set up and use a
+Unid Client, as well as how to subscribe to the service and access Unids as
+part of the subscription.
+
+This repository is located at https://github.com/unidly/unidly_api and is
+publically accessible.
+
+unid_api
+  |-- README.md
+  |-- CMakeLists.txt
+  |-- build/
+  |-- doc/
+  |-- include/
+  |-- src/
+  |-- test/
+  |-- tools/

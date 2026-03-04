@@ -5,7 +5,9 @@ This file contains the c++ coding guidelines for all c++ projects of Unidly.io, 
 The file has been modified from the original, dated Jul 8, 2025, to reflect the
 project specific changes to the core guidelines for the use of Unidly.io
 
-In most cases, the original text is included, but is ~~ marked with strikethrough~~.
+The majority of changes relate to class, function, variable and other naming
+conventions, coding formats..
+
 
 <hr>
 
@@ -21415,6 +21417,13 @@ Also, most real-world projects include code from many sources, so standardizing 
 After many requests for guidance from users, we present a set of rules that you might use if you have no better ideas, but the real aim is consistency, rather than any particular rule set.
 IDEs and tools can help (as well as hinder).
 
+Note that layout is not subject to developer taste. Developers are encouraged to integrate ClangFormat into their code editors, and to
+have it automatically executed before any file save operation. A .clang-format file is available at the root of all project respositories
+that must be used to define the
+
+The ClangFormat program is used to manage the code file layout. ClangFormat
+
+
 Naming and layout rules:
 
 * [NL.1: Don't say in comments what can be clearly stated in code](#rl-comments)
@@ -21436,7 +21445,7 @@ Naming and layout rules:
 * [NL.21: Declare one name (only) per declaration](#rl-dcl)
 * [NL.25: Don't use `void` as an argument type](#rl-void)
 * [NL.26: Use conventional `const` notation](#rl-const)
-* [NL.27: Use a `.cpp` suffix for code files and `.h` for interface files](#rl-file-suffix)
+* [NL.27: Use a `.cpp` suffix for code files and `.hpp` for interface files](#rl-file-suffix)
 
 Most of these rules are aesthetic and programmers hold strong opinions.
 IDEs also tend to have defaults and a range of alternatives.
@@ -21507,27 +21516,14 @@ not possible.
 
 ##### Reason
 
-Readability. Avoidance of "silly mistakes."
+Readability. Avoidance of "silly mistakes." Avoidance of developer style related arguments.
 
-##### Example, bad
-
-    int i;
-    for (i = 0; i < max; ++i); // bug waiting to happen
-    if (i == j)
-        return i;
-
-##### Note
-
-Always indenting the statement after `if (...)`, `for (...)`, and `while (...)` is usually a good idea:
-
-    if (i < 0) error("negative argument");
-
-    if (i < 0)
-        error("negative argument");
+Developers are required to run Clang-Formt with the project .clang-format specification file by their
+code IDE or editor. Clang-format must be automatically executed prior to any save or write within the editor.
 
 ##### Enforcement
 
-Use a tool.
+Use Clang-Format tool.
 
 ### <a name="rl-name-type"></a>NL.5: Avoid encoding type information in names
 
@@ -22050,52 +22046,16 @@ This rule was added after many requests for guidance.
 
 Flag `const` used as a suffix for a type.
 
-### <a name="rl-file-suffix"></a>NL.27: Use a `.cpp` suffix for code files and `.h` for interface files
+### <a name="rl-file-suffix"></a>NL.27: Use a `.cpp` suffix for code files and `.hpp` interface files
 
 ##### Reason
 
-It's a longstanding convention.
-But consistency is more important, so if your project uses something else, follow that.
-
-##### Note
-
-This convention reflects a common use pattern:
-Headers are more often shared with C to compile as both C++ and C, which typically uses `.h`,
-and it's easier to name all headers `.h` instead of having different extensions for just those headers that are intended to be shared with C.
-On the other hand, implementation files are rarely shared with C and so should typically be distinguished from `.c` files,
-so it's normally best to name all C++ implementation files something else (such as `.cpp`).
-
-The specific names `.h` and `.cpp` are not required (just recommended as a default) and other names are in widespread use.
-Examples are `.hh`, `.C`, and `.cxx`. Use such names equivalently.
-In this document, we refer to `.h` and `.cpp` as a shorthand for header and implementation files,
-even though the actual extension might be different.
-
-Your IDE (if you use one) might have strong opinions about suffixes.
-
-##### Example
-
-    // foo.h:
-    extern int a;   // a declaration
-    extern void foo();
-
-    // foo.cpp:
-    int a;   // a definition
-    void foo() { ++a; }
-
-`foo.h` provides the interface to `foo.cpp`. Global variables are best avoided.
-
-##### Example, bad
-
-    // foo.h:
-    int a;   // a definition
-    void foo() { ++a; }
-
-`#include <foo.h>` twice in a program and you get a linker error for two one-definition-rule violations.
+Using `.hpp` the developer distinguish between cpp specific interfaces and c specific interfaces.
+For C libraries or C code files , the suffixes are required to be .h and .c.
 
 ##### Enforcement
 
-* Flag non-conventional file names.
-* Check that `.h` and `.cpp` (and equivalents) follow the rules below.
+* As part of any code review, Flag non-conventional file names.
 
 # <a name="s-faq"></a>FAQ: Answers to frequently asked questions
 

@@ -1,61 +1,53 @@
 # Unid Detailed Design Document
 
 ## Toolset
-This project is designed to be fully contained without the use of any third
-party libraries. Eliminating third party libraries requires re-invention of
-many wheels, but our belief is that in a project such as this, it is important
-to be independent of third party software that is not under our development
-control.
 
-* gcc14-g++ - C++ compiler that supports C++20
-* Cppcheck - Static code analyzer
-* Valgrind - Runtime leak analyzer
+The following software tools are used for unid development:
+
+* [gcc14-g++](https://gcc.gnu.org/) - C++ compiler that supports C++20
+* [Cppcheck](https://cppcheck.sourceforge.io/) 2.7.4 - Static code analyzer
+* [ClangTidy](https://releases.llvm.org/15.0.0/tools/clang/tools/extra/docs/clang-tidy/index.html) 15.0.7 - C++ linter tool
+* [ClangFormat](https://clang.llvm.org/docs/ClangFormat.html) 15.0.7 - Source code format tool
+* [Valgrind](https://valgrind.org/info/) 3.19.0 - Runtime leak analyzer
+* [Cmake](https://cmake.org/) 4.2.3 - Build files generator
+* [Doxygen](doxygen.nl) 1.16.1 - Documentation generator
+* [Benchmark](https://github.com/google/benchmark) - Google's benchmark library
+* [Googletest](https://github.com/google/googletest) - Google's unit test library
 
 ## Libraries
-Using 3rd party libraries in a project like Unid is problematic. A project
-like Unid, which is designed to provide a long lasting infrastructure, can last
-for decades or beyond. We view Unid as a utility, much like an operating
-system, that is continuously being modified and updated to make use of the
-latest hardware and software technologies.
 
-Open source and even commericial libraries have rather short lifetimes. An
-extremely popular niche library can basically disappear if the creator decides
-to move on - a common occurance. Commercial libraries are often acquired, and
-become less usable commercially, or completely get killed by the acquirer.
+These libraries are used by unid software:
 
-Nonetheless, using libraries greatly accelerates the development of system
-software, and improves the performance of a software product.
-
-* [Quill](https://github.com/odygrd/quill) - Logger
+* [TQuic](https://tquic.net/) - UDP based transport layer protocol
+* [Asio](https://think-async.com/Asio/AsioStandalone.html) - Asynchronous
+network I/O
+* [Quill](https://github.com/odygrd/quill) - High performance logger
 * [Catch2](https://github.com/catchorg/Catch2) - Unit test framework
-
-Serialization
-
-Encryption
-
 
 ## References
 ### Networking
 
-UDP protocol implemented at the socket level for client/server communications.
-
-* [sample implementation in c++](https://cppcodetips.wordpress.com/2014/01/29/udp-socket-class-in-c)
 * [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/)
 
 ### Consensus
 
-Paxos is the default consensus algorithm that is used to provide failover
+The Paxos algorithm is used in distributed computing to achieve consensus
+among multiple nodes (servers), ensuring they agree on a single, consistent
+value or sequence of operations even if some nodes fail or network partitions
+occur. It is fundamental for maintaining consistency in distributed databases,
+distributed logs, and fault-tolerant systems.
 
 * [The Part-Time Parlaiment](https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf)
 * [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf)
 * [Notes on Paxos Made Simple](https://medium.com/@adityashete009/notes-on-paxos-made-simple-1e693d60f51e)
 * [Paxos in Pictures Video](https://www.youtube.com/watch?v=UUQ8xYWR4do&t=322s)
+* [PaxosStore: High-availability Storage Made Practical in WeChat](https://www.vldb.org/pvldb/vol10/p1730-lin.pdf)
 
 ### Interprocess communication
 
 The Unid client passes Unids to the application using shared memory and a
 simple circular queue. The queue contains Unid values passed from the unid
-client to the application..
+client to the application.
 
 Using shared memory for Inter-Process Communication (IPC) in C++ is highly
 efficient because it avoids data copying between kernel and user space.
@@ -65,6 +57,7 @@ like mutexes or semaphores to prevent race conditions and data corruption.
 Here are implementation of a class that handles a circular queue in C++:
 
 * [Shared Memory with POSIX API](https://eric-lo.gitbook.io/synchronization/shared-memory)
+* [IPC Shared Memory](https://www.geeksforgeeks.org/operating-systems/ipc-shared-memory/)
 * [Lock-Free Single-Producer Single-Consumer Circular Queue](https://main.codeproject.com/articles/Lock-Free-Single-Producer-Single-Consumer-Circular#comments-section)
 
 ## Overview
