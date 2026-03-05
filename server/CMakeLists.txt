@@ -9,6 +9,7 @@ target_sources(unid_server
   PRIVATE
     ./src/main.cpp
     ./src/network/network.cpp
+    ./src/network/udp_server.cpp
 )
 
 target_include_directories(unid_server

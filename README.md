@@ -9,9 +9,10 @@ Ids).
 
 A Unid has the following charactersics:
 
-1. They are unque tnd sequential
-1. They are available in 16-bit, 32-bit, 64 bit and 128-bit integerso 
-1. They are available to in a distributed end global application
+1. They are unique and sequential
+1. They are available in 16-bit, 32-bit and  64-bit widths
+1. They are natively supported in most modern RDBMs
+1. They are available to in a distributed and global applications
 1. They are failsafe
 
 The primary use case for Unids is a distributed database environment where
@@ -30,7 +31,7 @@ collisions in a database application, and also have the following advantages:
 UUIDs as primary keys in a database can lead to several performance and
 operational challenges, primarily due to the randomness (especially with UUID
 v4). Also, UUIDs are larger size (128 bits) compared to Unids, that are
-available in a variety of sizes, from 16-bit to 128-bits as needed by
+available in a variety of sizes, from 16-bit to 64-bits as needed by
 the database application use case.
 
 UUIDs inserted into random locations with B-tree indexes fore frequent "page
@@ -82,6 +83,7 @@ is shared between the Server and Client programs.
 This repository is located at https://github.com/unidly/unid and is
 not publically accessible.
 
+```
 unid
   |-- README.md - this file
   |-- CMakeLists.txt - the project top level CML
@@ -92,6 +94,7 @@ unid
   |-- spike/ - simple programs used to benchmark and learn about libs
   |-- test/ - unit tests
   |-- tools/ - miscellaneous comman line tools
+```
 
 A separate repository is used to de-couple the Unid Api from the Unid
 software. The Unid Api library is for use by an application that interfaces
@@ -103,6 +106,7 @@ part of the subscription.
 This repository is located at https://github.com/unidly/unidly_api and is
 publically accessible.
 
+```
 unid_api
   |-- README.md
   |-- CMakeLists.txt
@@ -112,3 +116,4 @@ unid_api
   |-- src/
   |-- test/
   |-- tools/
+```

@@ -8,7 +8,6 @@ Document types:
 
 Document organization
 
-
 ```
 doc
 ├── README.md
