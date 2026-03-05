@@ -11,20 +11,21 @@ The following software tools are used for unid development:
 * [Valgrind](https://valgrind.org/info/) 3.19.0 - Runtime leak analyzer
 * [Cmake](https://cmake.org/) 4.2.3 - Build files generator
 * [Doxygen](doxygen.nl) 1.16.1 - Documentation generator
+* [Conan](https://conan.io) - C/C++ Package manager
 * [Benchmark](https://github.com/google/benchmark) - Google's benchmark library
 * [Googletest](https://github.com/google/googletest) - Google's unit test library
 
 ## Libraries
 
-These libraries are used by unid software:
+We use the Conan C/C++ Package Manager for installation of and management of libraries that are required by Unid.
+
+These libraries are used by Unid software:
 
 * [TQuic](https://tquic.net/) - UDP based transport layer protocol
-* [Asio](https://think-async.com/Asio/AsioStandalone.html) - Asynchronous
-network I/O
-* [Quill](https://github.com/odygrd/quill) - High performance logger
-* [Catch2](https://github.com/catchorg/Catch2) - Unit test framework
+* [Asio](https://think-async.com/Asio/AsioStandalone.html) 1.36.0 - Asynchronous network I/O
+* [Quill](https://github.com/odygrd/quill) 11.1.0 - High performance logger
 
-## References
+## Technical References
 ### Networking
 
 * [Beej's Guide to Network Programming](https://beej.us/guide/bgnet/html/)

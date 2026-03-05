@@ -1,14 +1,28 @@
 /**
  * @file
- * @brief Header file for entry point for Unid Server
+ * @brief Network class header
  *
  * @copyright Copyright 2026, Unidly LLC
  */
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef NETWORK_H
+#define NETWORK_H
 
-namespace unid {
+#include <asio.hpp>
 
-}
-#endif // MAIN_H
+#include <iostream>
+
+namespace unid::network {
+class Network {
+public:
+  Network(){};
+  ~Network(){};
+
+  void print_network() { std::cout << "unid::network::Network\n"; }
+
+protected:
+private:
+};
+} // namespace unid::network
+
+#endif // NETWORK_H

@@ -4,8 +4,3 @@
  *
  * @copyright Copyright 2026, Unidly LLC
  */
-
-int main() {
-
-  return 0;
-}
