@@ -13,7 +13,7 @@ The following software tools are used for unid development:
 * [Doxygen](doxygen.nl) 1.16.1 - Documentation generator
 * [Conan](https://conan.io) - C/C++ Package manager
 * [Benchmark](https://github.com/google/benchmark) - Google's benchmark library
-* [Googletest](https://github.com/google/googletest) - Google's unit test library
+* [Catch2](https://github.com/catchorg/Catch2) 3.13.0 - Unit testing
 
 ## Libraries
 

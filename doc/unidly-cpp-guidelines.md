@@ -21637,7 +21637,14 @@ ISO Standard, use lower case only and digits, separate words with underscores:
 * `vector`
 * `my_map`
 
-We adopt the ISO Standard for are variable names and function/method names.
+We adopt the ISO Standard for are variable names and function names.
+
+We modify the ISO Standard for private class member variables by appending a single underscore after the variable.
+This is done to help the developer know that a particular variable is a class member for clarity and
+readability, and to avoid problems with shadowing. For example, as declared in a class:
+
+* `int timout_`
+* `std::vector<std::int> timeouts_`
 
 We modify the ISO Standard, starting each entity with a capital letter for Class names, Enum names, Structure names.
 

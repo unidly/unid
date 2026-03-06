@@ -8,6 +8,8 @@ class MyProject(ConanFile):
     def requirements(self):
         # Define dependencies here
         self.requires("asio/1.36.0")
+        self.requires("benchmark/1.9.4")
+        self.requires("catch2/3.13.0")
         self.requires("ms-gsl/4.2.0")
         self.requires("quill/11.0.2")
 

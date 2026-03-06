@@ -1,9 +1,12 @@
 /**
  * @file
- * @brief A UDP server class that uses ASIO for asynchronous I/O
+ * @brief A UDP server class that uses ASIO for asynchronous I/O.
  *
  * @copyright Copyright 2026 by Unidly LLC. All rights reserved.
  */
+
+#ifndef UDP_SERVER_HPP
+#define UDP_SERVER_HPP
 
 #include <array>
 #include <asio.hpp>
@@ -16,7 +19,7 @@ using asio::ip::udp;
 
 namespace unid::network {
 /**
- * @brief Udp_server class
+ * @brief Udp_server class.
  *
  * This class uses asio for an asynchronous, high speed connection to the
  * UDP ports.
@@ -40,7 +43,7 @@ public:
   using work_guard_type =
       asio::executor_work_guard<asio::io_context::executor_type>;
   /**
-   * @brief The Udp_server class constructor
+   * @brief The Udp_server class constructor.
    *
    * The constructor creates a socket that is used for i/o.
    *
@@ -55,13 +58,16 @@ public:
   Udp_server(asio::io_context &io_context, short port);
 
   /**
-   * @brief The Udp_server class destructor
+   * @brief The Udp_server class destructor.
    *
    * Cleans up asio connection and closes all sockets
    */
   ~Udp_server();
 
-  short get_port() { return port; };
+  /**
+   * @brief Returns the port assigned to the socket.
+   */
+  short get_port() { return port_; };
 
 private:
   // Initiates an asynchronous receive operation
@@ -71,11 +77,11 @@ private:
   void handle_receive(const asio::error_code &error,
                       std::size_t bytes_transferred);
 
-  udp::socket socket;
-  udp::endpoint remote_endpoint;
-  std::optional<work_guard_type> work_guard;
-  short port;
-  std::array<char, 1024> recv_buf;
+  udp::socket socket_;
+  udp::endpoint remote_endpoint_;
+  std::optional<work_guard_type> work_guard_;
+  short port_;
+  std::array<char, 1024> recv_buf_;
 };
 
 /*
@@ -95,3 +101,5 @@ int main() {
 }
 */
 } // namespace unid::network
+
+#endif // UDP_SERVER_HPP
