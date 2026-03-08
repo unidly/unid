@@ -84,4 +84,84 @@ Cloudflair, it is written in Rust and has a C/C++ API. Tquic was developed by Te
 company. It is one of the highest grossing multimedia companies in the world based on revenue.
 It is also the world's largest company in the video game industry based on its equity investments.
 
+[Tquic API Functions](https://tquic.net/docs/api_reference/c_quic)
 
+
+#### Configuration
+##### QUIC
+`struct quic_config_t *quic_config_new(void);`
+`void quic_config_free(struct quic_config_t *config);`
+
+`void quic_config_set_max_idle_timeout(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_max_udp_payload_size(struct quic_config_t *config, uint16_t v);`
+`void quic_config_set_initial_max_data(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_initial_max_stream_data_bidi_local(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_initial_max_stream_data_bidi_remote(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_initial_max_stream_data_uni(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_initial_max_streams_bidi(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_initial_max_streams_uni(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_ack_delay_exponent(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_max_ack_delay(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_congestion_control_algorithm(struct quic_config_t *config, enum quic_congestion_control_algorithm v);`
+`void quic_config_set_initial_congestion_window(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_slow_start_thresh(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_bbr_probe_rtt_duration(struct quic_config_t *config, uint64_t v);`
+`void quic_config_enable_bbr_probe_rtt_based_on_bdp(struct quic_config_t *config, bool v);`
+`void quic_config_set_bbr_probe_rtt_cwnd_gain(struct quic_config_t *config, double v);`
+`void quic_config_set_bbr_rtprop_filter_len(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_bbr_probe_bw_cwnd_gain(struct quic_config_t *config, double v);`
+`void quic_config_set_copa_slow_start_delta(struct quic_config_t *config, double v);`
+`void quic_config_set_copa_steady_delta(struct quic_config_t *config, double v);`
+`void quic_config_enable_copa_use_standing_rtt(struct quic_config_t *config, bool v);`
+`void quic_config_set_initial_rtt(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_pto_linear_factor(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_max_pto(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_active_connection_id_limit(struct quic_config_t *config, uint64_t v);`
+`void quic_config_enable_multipath(struct quic_config_t *config, bool enabled);`
+`void quic_config_set_multipath_algorithm(struct quic_config_t *config, enum MultipathAlgorithm v);`
+`void quic_config_set_max_connection_window(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_max_stream_window(struct quic_config_t *config, uint64_t v);`
+`void quic_config_set_max_concurrent_conns(struct quic_config_t *config, uint32_t v);`
+`int quic_config_set_reset_token_key(struct quic_config_t *config, const uint8_t *token_key, size_t token_key_len);`
+`void quic_config_set_address_token_lifetime(struct quic_config_t *config, uint64_t seconds);`
+`int quic_config_set_address_token_key(struct quic_config_t *config, const uint8_t *token_keys, size_t token_keys_len);`
+`void quic_config_enable_retry(struct quic_config_t *config, bool enabled);`
+`void quic_config_set_cid_len(struct quic_config_t *config, uint8_t v);`
+`void quic_config_set_send_batch_size(struct quic_config_t *config, uint16_t v);`
+`void quic_config_set_zerortt_buffer_size(struct quic_config_t *config, uint16_t v);`
+`void quic_config_set_max_undecryptable_packets(struct quic_config_t *config, uint16_t v);`
+`void quic_config_enable_encryption(struct quic_config_t *config, bool v);`
+`void quic_config_set_tls_config(struct quic_config_t *config, struct quic_tls_config_t *tls_config);`
+`void quic_config_set_tls_selector(struct quic_config_t *config, const struct quic_tls_config_select_methods_t *methods, quic_tls_config_select_context_t context);`
+
+##### TLS
+
+#### Endpoint
+##### Creation/Destruction
+##### Receiving/Sending
+##### Timeout events
+##### Internal events
+##### Transport Callbacks
+##### Miscellaneous
+
+#### Connection
+##### Creation/Closing
+##### Context
+##### Logging and tracion
+##### Miscellaneous
+
+#### Stream
+##### Creation/Closing
+##### Reading/Writing
+##### Priorities
+##### Events
+##### Context
+##### Miscellaneous
+
+#### Path
+##### Creation
+##### Miscellaneous
+
+#### Miscellaneous
+##### Types
+##### Functions
