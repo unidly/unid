@@ -21,9 +21,14 @@ We use the Conan C/C++ Package Manager for installation of and management of lib
 
 These libraries are used by Unid software:
 
-* [TQuic](https://tquic.net/) - UDP based transport layer protocol
+* [Quiche (google)](https://google/quiche/) - QUIC transport layer protocol
 * [Asio](https://think-async.com/Asio/AsioStandalone.html) 1.36.0 - Asynchronous network I/O
 * [Quill](https://github.com/odygrd/quill) 11.1.0 - High performance logger
+
+Note about Quiche: The google implementation of QUIC does not contain an API
+interface. It uses Bazel for a build platform. An acknowledged implementation for
+Quiche as a library is in the Chromium open source project. We draw on this
+heavily for our API to Google's Quiche.
 
 ## Technical References
 ### Networking

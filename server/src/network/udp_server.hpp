@@ -65,6 +65,10 @@ public:
   ~Udp_server();
 
   /**
+   * @brief Sends data to a client using udp
+   */
+
+  /**
    * @brief Returns the port assigned to the socket.
    */
   short get_port() { return port_; };
@@ -83,23 +87,6 @@ private:
   short port_;
   std::array<char, 1024> recv_buf_;
 };
-
-/*
-// Main function to run the server
-int main() {
-  try {
-    asio::io_context io_context;
-    Udp_server server(io_context, 13); // Listen on UDP port 13
-
-    std::cout << "UDP Server running on port 13. Press Ctrl+C to exit."
-              << std::endl;
-    io_context.run(); // Run the io_context to start the asynchronous operations
-  } catch (std::exception &e) {
-    std::cerr << "Exception: " << e.what() << std::endl;
-  }
-  return 0;
-}
-*/
 } // namespace unid::network
 
 #endif // UDP_SERVER_HPP
