@@ -1,3 +1,0 @@
-[submodule "library/networkthird_party/quic/quiche"]
-	path = shared/networkthird_party/quic/quiche
-	url = https://github.com/google/quiche
