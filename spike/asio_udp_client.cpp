@@ -1,13 +1,14 @@
+#define ASIO_STANDALONE
 
 #include <array>
-#include <asio.hpp>  // Use <boost/asio.hpp> if using Boost
+#include <asio.hpp> // Use <boost/asio.hpp> if using Boost
 #include <asio/ts/buffer.hpp>
 #include <asio/ts/internet.hpp>
 #include <iostream>
 
 using asio::ip::udp;
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   try {
     if (argc != 2) {
       std::cerr << "Usage: client <host>" << std::endl;
@@ -32,7 +33,7 @@ int main(int argc, char* argv[]) {
     socket.send_to(asio::buffer(send_buf), receiver_endpoint);
 
     // Buffer to hold the response
-    //asio::array<char, 512> recv_buf;
+    // asio::array<char, 512> recv_buf;
     std::array<char, 512> recv_buf;
     udp::endpoint sender_endpoint;
 
@@ -45,10 +46,9 @@ int main(int argc, char* argv[]) {
     std::cout.write(recv_buf.data(), len);
     std::cout << std::endl;
 
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
 
   return 0;
 }
-

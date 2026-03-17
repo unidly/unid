@@ -12,12 +12,12 @@
 #define MAXLINE 1024
 
 /**
- * @brief UDP clas
+ * @brief UDP server class
  */
-class Udp {
- public:
-  Udp() {}
-  ~Udp() { close(sockfd); }
+class Udp_server {
+public:
+  Udp_server() {}
+  ~Udp_server() { close(sockfd); }
 
   /**
    * @brief Create a UDP socket
@@ -39,8 +39,8 @@ class Udp {
    * @param[in] servaddr Server's socket address structure
    * @param servaddr_size Size of server's socket address structure
    */
-  void bind_socket(const struct sockaddr_in* servaddr, socklen_t addrlen) {
-    if (bind(sockfd, (const struct sockaddr*)servaddr, addrlen) < 0) {
+  void bind_socket(const struct sockaddr_in *servaddr, socklen_t addrlen) {
+    if (bind(sockfd, (const struct sockaddr *)servaddr, addrlen) < 0) {
       perror("bind failed");
       exit(EXIT_FAILURE);
     }
@@ -54,9 +54,9 @@ class Udp {
    * @param buffer Storage for received datagram
    * @param cliaddr Client address
    */
-  void recieve(char* buffer, struct sockaddr_in* cliaddr, socklen_t len) {
+  void recieve(char *buffer, struct sockaddr_in *cliaddr, socklen_t len) {
     int n = recvfrom(sockfd, (char *)buffer, MAXLINE, MSG_WAITALL,
-                               (struct sockaddr*)cliaddr, &len);
+                     (struct sockaddr *)cliaddr, &len);
     buffer[n] = '\0';
   }
 
@@ -66,36 +66,34 @@ class Udp {
    * @param[in] message_len Length of C string
    * @param[out] cliaddr Client address structure
    */
-  void send(const char* message, int message_len, struct sockaddr_in* cliaddr, socklen_t len) {
+  void send(const char *message, int message_len, struct sockaddr_in *cliaddr,
+            socklen_t len) {
     std::cout << "Message: " << message << std::endl;
     std::cout << "Message length: " << message_len << std::endl;
     sendto(sockfd, message, message_len, MSG_CONFIRM,
-           (const struct sockaddr*)cliaddr, len);
+           (const struct sockaddr *)cliaddr, len);
   }
 
-  int get_sockfd() {
-    return sockfd;
-  }
+  int get_sockfd() { return sockfd; }
 
- private:
+private:
   int sockfd;
 };
 
-
 int main() {
-  Udp udp;
+  Udp_server udp_server;
   char buffer[MAXLINE];
   const char *hello = "Hello from server";
 
   udp.create_udp_socket();
 
   // Prepare address structures for use
-  struct sockaddr_in servaddr, cliaddr;    // Use for UDP
+  struct sockaddr_in servaddr, cliaddr; // Use for UDP
   memset(&servaddr, 0, sizeof(servaddr));
   memset(&cliaddr, 0, sizeof(cliaddr));
-  servaddr.sin_family = AF_INET;           // IPv4
-  servaddr.sin_addr.s_addr = INADDR_ANY;   // Server listen on any address
-  servaddr.sin_port = htons(PORT);         // Server listen port
+  servaddr.sin_family = AF_INET;         // IPv4
+  servaddr.sin_addr.s_addr = INADDR_ANY; // Server listen on any address
+  servaddr.sin_port = htons(PORT);       // Server listen port
 
   socklen_t addrlen = sizeof(servaddr);
   udp.bind_socket(&servaddr, addrlen);
@@ -113,7 +111,6 @@ int main() {
 
   return 0;
 }
-
 
 /*
 // Driver code

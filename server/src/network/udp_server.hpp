@@ -8,85 +8,60 @@
 #ifndef UDP_SERVER_HPP
 #define UDP_SERVER_HPP
 
-#include <array>
-#include <asio.hpp>
-#include <functional>
+#include "asio.hpp"
+#include <cstdlib>
 #include <iostream>
-#include <optional>
-#include <string>
 
 using asio::ip::udp;
 
-namespace unid::network {
-/**
- * @brief Udp_server class.
- *
- * This class uses asio for an asynchronous, high speed connection to the
- * UDP ports.
- *
- * The calling program must set up the io_context, and pass it to the
- * constructor, along with a desired port number.
- *
- * If the port number is in use, an exception will be generated.
- *
- * After the class is instantiated, the io_context.run() function begins
- * the receive operation on the server port.
- *
- * Here is a code snippet for the caller:
- *   asio::io_context io_context;
- *   Udp_server server(io_context, 13); // Listen on UDP port 13
- *   io_context.run();
- *
- */
 class Udp_server {
 public:
-  using work_guard_type =
-      asio::executor_work_guard<asio::io_context::executor_type>;
-  /**
-   * @brief The Udp_server class constructor.
-   *
-   * The constructor creates a socket that is used for i/o.
-   *
-   * TODO Research the use of a multi-threaded implementation of this context
-   * on a pool of threads instead of a single thread for parallel processing
-   * of streams coming in from Unid_clients.
-   *
-   * @param io_context Asio context
-   * @param port UDP recieve port
-   * @throws asio::error::port_in_use or std::system_error
-   */
-  Udp_server(asio::io_context &io_context, short port);
+  udp_server(asio::io_context &io_context, short port)
+      : socket_(io_context, udp::endpoint(udp::v4(), port)) {
+    do_receive();
+  }
 
-  /**
-   * @brief The Udp_server class destructor.
-   *
-   * Cleans up asio connection and closes all sockets
-   */
-  ~Udp_server();
+  void do_receive() {
+    socket_.async_receive_from(
+        asio::buffer(data_, max_length), sender_endpoint_,
+        [this](std::error_code ec, std::size_t bytes_recvd) {
+          if (!ec && bytes_recvd > 0) {
+            do_send(bytes_recvd);
+          } else {
+            do_receive();
+          }
+        });
+  }
 
-  /**
-   * @brief Sends data to a client using udp
-   */
-
-  /**
-   * @brief Returns the port assigned to the socket.
-   */
-  short get_port() { return port_; };
+  void do_send(std::size_t length) {
+    socket_.async_send_to(asio::buffer(data_, length), sender_endpoint_,
+                          [this](std::error_code /*ec*/,
+                                 std::size_t /*bytes_sent*/) { do_receive(); });
+  }
 
 private:
-  // Initiates an asynchronous receive operation
-  void start_receive();
-
-  // Handler for received data
-  void handle_receive(const asio::error_code &error,
-                      std::size_t bytes_transferred);
-
   udp::socket socket_;
-  udp::endpoint remote_endpoint_;
-  std::optional<work_guard_type> work_guard_;
-  short port_;
-  std::array<char, 1024> recv_buf_;
+  udp::endpoint sender_endpoint_;
+  enum { max_length = 1024 };
+  char data_[max_length];
 };
-} // namespace unid::network
 
+int main(int argc, char *argv[]) {
+  try {
+    if (argc != 2) {
+      std::cerr << "Usage: async_udp_echo_server <port>\n";
+      return 1;
+    }
+
+    asio::io_context io_context;
+
+    server s(io_context, std::atoi(argv[1]));
+
+    io_context.run();
+  } catch (std::exception &e) {
+    std::cerr << "Exception: " << e.what() << "\n";
+  }
+
+  return 0;
+}
 #endif // UDP_SERVER_HPP

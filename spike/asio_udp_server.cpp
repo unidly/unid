@@ -1,6 +1,7 @@
+#define ASIO_STANDALONE
 
 #include <array>
-#include <asio.hpp>  // Use <boost/asio.hpp> if using Boost
+#include <asio.hpp> // Use <boost/asio.hpp> if using Boost
 #include <ctime>
 #include <iostream>
 #include <string>
@@ -50,10 +51,9 @@ int main() {
       std::cout << "Sent message to " << remote_endpoint.address().to_string()
                 << ":" << remote_endpoint.port() << std::endl;
     }
-  } catch (std::exception& e) {
+  } catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
 
   return 0;
 }
-
