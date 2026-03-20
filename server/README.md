@@ -1,8 +1,2 @@
-# Unid Server Project Branch
+# Unid server
 
-## Directory Structure
-
-server
-  |-- CMakeLists.txt
-  |-- include
-  |-- src

@@ -5,7 +5,7 @@ find_package(Catch2 REQUIRED)
 add_executable(unid_test)
 
 target_sources(unid_test PRIVATE
-  ../server/src/network/udp_server.cpp
+  ../server/network/udp_server.cpp
   network_udp_server.cpp
 )
 
