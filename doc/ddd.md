@@ -66,6 +66,9 @@ Here are implementation of a class that handles a circular queue in C++:
 * [IPC Shared Memory](https://www.geeksforgeeks.org/operating-systems/ipc-shared-memory/)
 * [Lock-Free Single-Producer Single-Consumer Circular Queue](https://main.codeproject.com/articles/Lock-Free-Single-Producer-Single-Consumer-Circular#comments-section)
 
+### Database
+
+
 ## Overview
 
 Unid is a fault tolerant, distributed, sequential integer server and client
@@ -97,7 +100,7 @@ Unid provides the following features
   * Shared memory IPC with application for passing id
   * Alleviates need for round-trip to RDBMS for DB generated id
 
-### Data
+### Database
 
 A data manager is responsible for providing access to data by the server
 logic. The data manager is responsible for assuring data consistency ane
@@ -135,10 +138,3 @@ Applications access using either shared memory IPC for best performance, or
 though IP sockets for applications that are based in a cluster with a single
 Leader Unid Client. (All nodes in a cluster should be provisioned with a Unid
 Client for failover operation.
-
-### Operation Guarantees
-
-* Unique integers - Unid guarantees to produce unique ascending ids
-* MTBF
-* MTTR
-* MTTF

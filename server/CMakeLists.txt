@@ -5,6 +5,8 @@ find_package(quill REQUIRED)
 
 add_executable(unid_server)
 
+add_subdirectory(logger)
+
 target_sources(unid_server
   PRIVATE
     main.cpp
@@ -21,5 +23,6 @@ target_link_libraries(unid_server
     asio::asio
     Microsoft.GSL::GSL
     quill::quill
+    quill_server_lib
 )
 

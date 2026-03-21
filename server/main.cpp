@@ -7,18 +7,26 @@
 
 #include "main.hpp"
 
-#include "asio.hpp"
-
 #include "network/udp_server.hpp"
 
-#include "quill/LogFunctions.h"
-#include "quill/SimpleSetup.h"
+#include "asio.hpp"
+
+#include "logger/quill_static.h"
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
 
 #include <iostream>
 
-#include "gsl/gsl"
+extern quill::Logger *global_logger_a;
 
 int main(int argc, char *argv[]) {
+  // Start file logging
+  setup_quill("unid.log");
+  global_logger_a->set_log_level(quill::LogLevel::TraceL3);
+  LOG_INFO(global_logger_a, "Starting Unid Server");
+
+  // Load startup configuration
+
   try {
     if (argc != 2) {
       std::cerr << "Usage: async_udp_echo_server <port>\n";

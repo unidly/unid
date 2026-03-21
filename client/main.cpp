@@ -11,9 +11,22 @@
 
 #include "asio.hpp"
 
+#include "logger/quill_static.h"
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
+
 #include <iostream>
 
+extern quill::Logger *global_logger_a;
+
 int main(int argc, char *argv[]) {
+  // Start file logging
+  // setup_quill("unid.log");
+  // global_logger_a->set_log_level(quill::LogLevel::TraceL3);
+  // LOG_INFO(global_logger_a, "Starting Unid Client");
+
+  // Load startup configuration
+
   try {
     if (argc != 3) {
       std::cerr << "Usage: udp_client <host> <service (port number)>"

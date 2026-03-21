@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief A UDP server class that uses ASIO for asynchronous I/O.
+ * @brief A UDP server class that uses ASIO for asynch operation..
  *
  * @copyright Copyright 2026 by Unidly LLC. All rights reserved.
  */
@@ -10,6 +10,9 @@
 
 #include "asio.hpp"
 #include <cstdlib>
+
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
 
 using asio::ip::udp;
 
@@ -31,7 +34,7 @@ public:
 private:
   udp::socket socket_;
   udp::endpoint sender_endpoint_;
-  enum { max_length = 1024 };
+  static constexpr int max_length = 1024;
   char data_[max_length];
 };
 
