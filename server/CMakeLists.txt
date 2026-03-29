@@ -11,6 +11,7 @@ target_sources(unid_server
   PRIVATE
     main.cpp
     network/udp_server.cpp
+    network/libpool.c
 )
 
 target_include_directories(unid_server

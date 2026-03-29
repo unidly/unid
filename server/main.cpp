@@ -15,6 +15,9 @@
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
+#include "network/libpool.h"
+
+#include <functional>
 #include <iostream>
 
 extern quill::Logger *global_logger_a;
@@ -35,7 +38,31 @@ int main(int argc, char *argv[]) {
 
     asio::io_context io_context;
 
+    // Register send and receive callback functions
+    auto async_send_callback = [](const asio::error_code &ec,
+                                  std::size_t bytes_transferred) {
+      if (!ec) {
+        std::cout << "Received asynch send callback!\n";
+      } else {
+        std::cout << "Error: " << ec.message() << std::endl;
+      }
+    };
+
+    auto async_receive_callback = [](const asio::error_code &ec,
+                                     std::size_t bytes_transferred) {
+      if (!ec) {
+        std::cout << "Received asynch receive callback!\n";
+      } else {
+        std::cout << "Error: " << ec.message() << std::endl;
+      }
+    };
+
+    // Start the server
     Udp_server s(io_context, std::atoi(argv[1]));
+
+    // Register the callbacks
+    s.set_async_receive_callback(async_receive_callback);
+    s.set_async_send_callback(async_send_callback);
 
     io_context.run();
   } catch (std::exception &e) {

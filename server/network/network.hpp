@@ -13,6 +13,10 @@
 #include <iostream>
 
 namespace unid::network {
+/**
+ * @class network
+ * @brief Manages and supports the network interface
+ */
 class Network {
 public:
   Network(){};

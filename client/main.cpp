@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief Entry point for Unid Server
+ * @brief Entry point for Unid Client
  *
  * @copyright Copyright 2026, Unidly LLC
  */
@@ -21,9 +21,9 @@ extern quill::Logger *global_logger_a;
 
 int main(int argc, char *argv[]) {
   // Start file logging
-  // setup_quill("unid.log");
-  // global_logger_a->set_log_level(quill::LogLevel::TraceL3);
-  // LOG_INFO(global_logger_a, "Starting Unid Client");
+  setup_quill("unid.log");
+  global_logger_a->set_log_level(quill::LogLevel::TraceL3);
+  LOG_INFO(global_logger_a, "Starting Unid Client");
 
   // Load startup configuration
 
