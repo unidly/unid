@@ -64,7 +64,9 @@ int main(int argc, char *argv[]) {
     s.set_async_receive_callback(async_receive_callback);
     s.set_async_send_callback(async_send_callback);
 
+    // Let er rip
     io_context.run();
+
   } catch (std::exception &e) {
     std::cerr << "Exception: " << e.what() << "\n";
   }
