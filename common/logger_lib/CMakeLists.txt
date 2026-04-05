@@ -1,7 +1,6 @@
-set(LIB_NAME quill_server_lib)
+set(LIB_NAME quill_static_lib)
 
 add_library(${LIB_NAME} STATIC
-        overwrite_macros.h
         quill_static.h
         quill_static.cpp)
 

@@ -10,9 +10,6 @@
 
 #include "asio.hpp"
 
-#include "quill/LogMacros.h"
-#include "quill/Logger.h"
-
 #include <cstdint>    // uintXX_t
 #include <functional> // std::function()
 
@@ -21,7 +18,7 @@ using asio::ip::udp;
 /**
  * @class Udp_client
  *
- * Provides UDPsocket i/o using udp. Uses asio to manage the interface with the
+ * Provides UDPsocket i/o. Uses asio to manage the interface with the
  * socket.
  */
 class Udp_client {
@@ -29,6 +26,15 @@ public:
   using Callback_type = std::function<void(const asio::error_code &error,
                                            std::size_t bytes_transferred)>;
 
+  /**
+   * @brief Constructor
+   *
+   * TODO Add support for ipv6 addressing
+   *
+   * @param io_context Asio event loop manager for asynch ops
+   * @param host IPv4 address of the server
+   * @param port Well known service port name or port number
+   */
   Udp_client(asio::io_context &io_context, const std::string &host,
              const std::string &service);
 
@@ -139,7 +145,7 @@ private:
   // Private member variables
   asio::io_context &io_context_;
   udp::socket socket_;
-  udp::endpoint server_endpoint_;
+  udp::endpoint receiver_endpoint_;
   Callback_type async_receive_callback_;
   Callback_type async_send_callback_;
 

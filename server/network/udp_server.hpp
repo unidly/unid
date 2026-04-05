@@ -9,7 +9,6 @@
 #define UDP_SERVER_HPP
 
 #include "asio.hpp"
-
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
@@ -29,9 +28,19 @@ public:
   using Callback_type = std::function<void(const asio::error_code &error,
                                            std::size_t bytes_tranferred)>;
 
-  Udp_server(asio::io_context &io_context, short port);
+  /**
+   * @brief Constructor
+   *
+   * TODO Add support for ipv6 addressing
+   *
+   * @param io_context Asio event loop manager for asynch ops
+   * @param port Port number
+   */
+  Udp_server(asio::io_context &io_context, short port, quill::Logger *logger);
 
   ~Udp_server();
+
+  short get_port() { return server_endpoint_.port(); }
 
   /**
    * @brief Set a callback for the receive datagram
@@ -141,6 +150,7 @@ private:
   // @TODO The data buffers are provided by the application in the final
   // design. A buffer pool is implemented and the async sendto and
   // recieve_from functions provide the buffers used by this server
+  quill::Logger *logger_;
   udp::socket socket_;
   udp::endpoint server_endpoint_;
   Callback_type async_receive_callback_;

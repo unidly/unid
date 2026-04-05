@@ -5,11 +5,10 @@ find_package(quill REQUIRED)
 
 add_executable(unid_server)
 
-add_subdirectory(logger)
-
 target_sources(unid_server
   PRIVATE
     main.cpp
+    logger/quill_logger.cpp
     network/udp_server.cpp
     network/libpool.c
 )
@@ -24,6 +23,5 @@ target_link_libraries(unid_server
     asio::asio
     Microsoft.GSL::GSL
     quill::quill
-    quill_server_lib
 )
 
