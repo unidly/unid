@@ -9,7 +9,6 @@
 #define UDP_SERVER_HPP
 
 #include "asio.hpp"
-#include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
 #include <cstddef>    // std::size_t

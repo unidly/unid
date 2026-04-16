@@ -1,4 +1,6 @@
-# Small libraries and common code used by both Client and Server appliations
+# Common library
 
-The server and client programs share a number of common project libraries and classes.
-These libraries and classes are maintained in this directory.
+This is a shared library used by both the server and client executables.
+It encapsulates common functionality, such as logging, serialization,
+network protocols, memory pools, etc.
+

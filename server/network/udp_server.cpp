@@ -16,12 +16,12 @@
 Udp_server::Udp_server(asio::io_context &io_context, short port,
                        quill::Logger *logger)
     : socket_(io_context, udp::endpoint(udp::v4(), port)), logger_{logger} {
-  LOG_DEBUG(logger_, "Udp_server()");
+  LOG_DEBUG(Udp_server::logger_, "Udp_server()");
 }
 
 // Destructor()
 Udp_server::~Udp_server() {
-  LOG_DEBUG(logger_, "~Udp_server()");
+  LOG_DEBUG(Udp_server::logger_, "~Udp_server()");
   socket_.close();
 }
 

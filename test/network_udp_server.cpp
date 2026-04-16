@@ -7,6 +7,7 @@
 
 #include "../server/network/udp_server.hpp"
 
+#include "common/quill.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 

@@ -2,16 +2,15 @@
  * @file
  * @brief Quill static library implementatoin
  */
-#include "quill_static.hpp"
+#include "../include/common/quill.hpp"
 
 #include "quill/Backend.h"
 #include "quill/Frontend.h"
 #include "quill/Logger.h"
 #include "quill/sinks/RotatingFileSink.h"
 
-// Define a global variable for a logger to avoid looking up the logger each
-// time. Additional global variables can be defined for additional loggers if
-// needed.
+// Global logger. We externally declair this in main, and then
+// access it by dependency injection into the classes
 quill::Logger *global_logger_a; // General purpose logger
 
 /**
