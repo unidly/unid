@@ -32,8 +32,8 @@ typedef struct Pool Pool;
  * initialize them. Otherwise, their default value is `malloc' and `free', from
  * the <stdlib.h> header.
  */
-typedef void *(*PoolAllocFuncPtr)(size_t);
-typedef void (*PoolFreeFuncPtr)(void *);
+typedef void* (*PoolAllocFuncPtr)(size_t);
+typedef void (*PoolFreeFuncPtr)(void*);
 extern PoolAllocFuncPtr pool_ext_alloc;
 extern PoolFreeFuncPtr pool_ext_free;
 
@@ -46,10 +46,10 @@ extern PoolFreeFuncPtr pool_ext_free;
  * Thread (pthread) functions.
  */
 #if defined(LIBPOOL_THREAD_SAFE)
-typedef void *(*PoolMutexNewFuncPtr)(void);
-typedef bool (*PoolMutexLockFuncPtr)(void *mutex);
-typedef bool (*PoolMutexUnlockFuncPtr)(void *mutex);
-typedef bool (*PoolMutexDestroyFuncPtr)(void *mutex);
+typedef void* (*PoolMutexNewFuncPtr)(void);
+typedef bool (*PoolMutexLockFuncPtr)(void* mutex);
+typedef bool (*PoolMutexUnlockFuncPtr)(void* mutex);
+typedef bool (*PoolMutexDestroyFuncPtr)(void* mutex);
 extern PoolMutexNewFuncPtr pool_ext_mutex_new;
 extern PoolMutexLockFuncPtr pool_ext_mutex_lock;
 extern PoolMutexUnlockFuncPtr pool_ext_mutex_unlock;
@@ -69,7 +69,7 @@ extern PoolMutexDestroyFuncPtr pool_ext_mutex_destroy;
  *   - The pool size can be updated with `pool_expand', but the chunk size
  *     cannot be changed.
  */
-Pool *pool_new(size_t pool_sz, size_t chunk_sz);
+Pool* pool_new(size_t pool_sz, size_t chunk_sz);
 
 /*
  * Expand the specified `pool', adding `extra_sz' free chunks.
@@ -77,25 +77,30 @@ Pool *pool_new(size_t pool_sz, size_t chunk_sz);
  * On success, it returns true; otherwise, it returns false and leaves the pool
  * unchanged.
  */
-bool pool_expand(Pool *pool, size_t extra_sz);
+bool pool_expand(Pool* pool, size_t extra_sz);
 
 /*
  * Free all data in a `Pool' structure, along with the structure itself. All
  * data allocated from this the pool becomes unusable. Allows NULL as the
  * `pool' parameter.
  */
-void pool_destroy(Pool *pool);
+void pool_destroy(Pool* pool);
 
 /*
  * Allocate a fixed-size chunk from the specified pool. If no chunks are
  * available, NULL is returned.
  */
-void *pool_alloc(Pool *pool);
+void* pool_alloc(Pool* pool);
 
 /*
  * Free a fixed-size chunk from the specified pool. Allows NULL as both
  * arguments.
  */
-void pool_free(Pool *pool, void *ptr);
+void pool_free(Pool* pool, void* ptr);
+
+/*
+ * Count the available chunks in the pool
+ */
+size_t pool_available(Pool* p);
 
 #endif /* POOL_H_ */

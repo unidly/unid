@@ -45,22 +45,22 @@ PoolMutexUnlockFuncPtr pool_ext_mutex_unlock = NULL;
 PoolMutexDestroyFuncPtr pool_ext_mutex_destroy = NULL;
 #else /* !defined(LIBPOOL_NO_STDLIB) */
 #include <pthread.h>
-static void *pool_ext_mutex_new_impl(void) {
-  pthread_mutex_t *mutex = pool_ext_alloc(sizeof(pthread_mutex_t));
+static void* pool_ext_mutex_new_impl(void) {
+  pthread_mutex_t* mutex = pool_ext_alloc(sizeof(pthread_mutex_t));
   if (pthread_mutex_init(mutex, NULL) != 0) {
     pool_ext_free(mutex);
     return NULL;
   }
   return mutex;
 }
-static bool pool_ext_mutex_lock_impl(void *mutex) {
-  return pthread_mutex_lock((pthread_mutex_t *)mutex) == 0;
+static bool pool_ext_mutex_lock_impl(void* mutex) {
+  return pthread_mutex_lock((pthread_mutex_t*)mutex) == 0;
 }
-static bool pool_ext_mutex_unlock_impl(void *mutex) {
-  return pthread_mutex_unlock((pthread_mutex_t *)mutex) == 0;
+static bool pool_ext_mutex_unlock_impl(void* mutex) {
+  return pthread_mutex_unlock((pthread_mutex_t*)mutex) == 0;
 }
-static bool pool_ext_mutex_destroy_impl(void *mutex) {
-  return pthread_mutex_destroy((pthread_mutex_t *)mutex) == 0;
+static bool pool_ext_mutex_destroy_impl(void* mutex) {
+  return pthread_mutex_destroy((pthread_mutex_t*)mutex) == 0;
 }
 PoolMutexNewFuncPtr pool_ext_mutex_new = pool_ext_mutex_new_impl;
 PoolMutexLockFuncPtr pool_ext_mutex_lock = pool_ext_mutex_lock_impl;
@@ -114,8 +114,8 @@ PoolMutexDestroyFuncPtr pool_ext_mutex_destroy = pool_ext_mutex_destroy_impl;
  */
 typedef struct ArrayStart ArrayStart;
 struct ArrayStart {
-  ArrayStart *next;
-  void *arr;
+  ArrayStart* next;
+  void* arr;
 };
 
 /*
@@ -129,12 +129,12 @@ struct ArrayStart {
  * pointer always points to a free chunk without needing to iterate anything.
  */
 struct Pool {
-  void *free_chunk;
-  ArrayStart *array_starts;
+  void* free_chunk;
+  ArrayStart* array_starts;
   size_t chunk_sz;
 
 #if defined(LIBPOOL_THREAD_SAFE)
-  void *lock;
+  void* lock;
 #endif /* defined(LIBPOOL_THREAD_SAFE) */
 };
 
@@ -175,9 +175,9 @@ static bool pool_assert_ext_funcs(void) {
  * This is explained in more detail (and with diagrams) in my blog article:
  * https://8dcc.github.io/programming/pool-allocator.html
  */
-Pool *pool_new(size_t pool_sz, size_t chunk_sz) {
-  Pool *pool;
-  char *arr;
+Pool* pool_new(size_t pool_sz, size_t chunk_sz) {
+  Pool* pool;
+  char* arr;
   size_t i;
 
   if (pool_sz == 0) {
@@ -186,12 +186,12 @@ Pool *pool_new(size_t pool_sz, size_t chunk_sz) {
   }
 
 #if defined(LIBPOOL_NO_ALIGNMENT)
-  if (chunk_sz < sizeof(void *)) {
+  if (chunk_sz < sizeof(void*)) {
     LIBPOOL_LOG("No alignment, and small pool size.");
     return NULL;
   }
 #else  /* !defined(LIBPOOL_NO_ALIGNMENT) */
-  chunk_sz = ALIGN2BOUNDARY(chunk_sz, sizeof(void *));
+  chunk_sz = ALIGN2BOUNDARY(chunk_sz, sizeof(void*));
 #endif /* !defined(LIBPOOL_NO_ALIGNMENT) */
 
   if (!pool_assert_ext_funcs()) {
@@ -237,8 +237,8 @@ Pool *pool_new(size_t pool_sz, size_t chunk_sz) {
    * be greater or equal than `sizeof(void*)'.
    */
   for (i = 0; i < pool_sz - 1; i++)
-    *(void **)(arr + i * chunk_sz) = arr + (i + 1) * chunk_sz;
-  *(void **)(arr + (pool_sz - 1) * chunk_sz) = NULL;
+    *(void**)(arr + i * chunk_sz) = arr + (i + 1) * chunk_sz;
+  *(void**)(arr + (pool_sz - 1) * chunk_sz) = NULL;
 
   pool->free_chunk = arr;
   pool->array_starts->next = NULL;
@@ -263,10 +263,10 @@ Pool *pool_new(size_t pool_sz, size_t chunk_sz) {
  * 4. Prepend the new chunk array to the existing linked list of free chunks.
  * 5. Prepend the new `ArrayStart' to the existing linked list of array starts.
  */
-bool pool_expand(Pool *pool, size_t extra_sz) {
+bool pool_expand(Pool* pool, size_t extra_sz) {
   bool result = true;
-  ArrayStart *array_start;
-  char *extra_arr;
+  ArrayStart* array_start;
+  char* extra_arr;
   size_t i;
 
   if (pool == NULL || extra_sz <= 0) {
@@ -299,10 +299,10 @@ bool pool_expand(Pool *pool, size_t extra_sz) {
   }
 
   for (i = 0; i < extra_sz - 1; i++)
-    *(void **)(extra_arr + i * pool->chunk_sz) =
+    *(void**)(extra_arr + i * pool->chunk_sz) =
         extra_arr + (i + 1) * pool->chunk_sz;
 
-  *(void **)(extra_arr + (extra_sz - 1) * pool->chunk_sz) = pool->free_chunk;
+  *(void**)(extra_arr + (extra_sz - 1) * pool->chunk_sz) = pool->free_chunk;
   pool->free_chunk = extra_arr;
 
   array_start->arr = extra_arr;
@@ -326,9 +326,9 @@ alloc_err:
  * contain the base address of each chunk array. We free the array, and then the
  * `ArrayStart' structure itself. Lastly, we free the `Pool' structure.
  */
-void pool_destroy(Pool *pool) {
-  ArrayStart *array_start;
-  ArrayStart *next;
+void pool_destroy(Pool* pool) {
+  ArrayStart* array_start;
+  ArrayStart* next;
 
   if (pool == NULL) {
     LIBPOOL_LOG("Invalid pool pointer.");
@@ -371,8 +371,8 @@ void pool_destroy(Pool *pool) {
  * structures, we can just return that pointer, and set the new start of the
  * linked list to the second item of the old list.
  */
-void *pool_alloc(Pool *pool) {
-  void *result = NULL;
+void* pool_alloc(Pool* pool) {
+  void* result = NULL;
 
   if (pool == NULL) {
     LIBPOOL_LOG("Invalid pool pointer.");
@@ -392,13 +392,13 @@ void *pool_alloc(Pool *pool) {
     LIBPOOL_LOG("No free chunks in pool.");
     goto done;
   }
-  VALGRIND_MAKE_MEM_DEFINED(pool->free_chunk, sizeof(void **));
+  VALGRIND_MAKE_MEM_DEFINED(pool->free_chunk, sizeof(void**));
 
   result = pool->free_chunk;
-  pool->free_chunk = *(void **)pool->free_chunk;
+  pool->free_chunk = *(void**)pool->free_chunk;
 
   VALGRIND_MEMPOOL_ALLOC(pool, result, pool->chunk_sz);
-  VALGRIND_MAKE_MEM_NOACCESS(pool->free_chunk, sizeof(void **));
+  VALGRIND_MAKE_MEM_NOACCESS(pool->free_chunk, sizeof(void**));
   VALGRIND_MAKE_MEM_NOACCESS(pool, sizeof(Pool));
 
 done:
@@ -413,7 +413,7 @@ done:
  * Note that, since we are using a linked list, the caller doesn't need to free
  * in the same order that used when allocating.
  */
-void pool_free(Pool *pool, void *ptr) {
+void pool_free(Pool* pool, void* ptr) {
   if (pool == NULL || ptr == NULL) {
     LIBPOOL_LOG("Invalid pool or data pointer.");
     return;
@@ -428,7 +428,7 @@ void pool_free(Pool *pool, void *ptr) {
 
   VALGRIND_MAKE_MEM_DEFINED(pool, sizeof(Pool));
 
-  *(void **)ptr = pool->free_chunk;
+  *(void**)ptr = pool->free_chunk;
   pool->free_chunk = ptr;
 
   VALGRIND_MAKE_MEM_NOACCESS(pool, sizeof(Pool));
@@ -437,4 +437,24 @@ void pool_free(Pool *pool, void *ptr) {
 #if defined(LIBPOOL_THREAD_SAFE)
   pool_ext_mutex_unlock(pool->lock);
 #endif /* defined(LIBPOOL_THREAD_SAFE) */
+}
+
+/*
+ * This is a helper function not available in the original source. It provides
+ * the number of free blocks in the linked lists.
+ */
+size_t pool_available(Pool* p) {
+  if (p == NULL) {
+    return 0;
+  }
+
+  size_t available = 0;
+  void* free_chunk = p->free_chunk;
+
+  while (free_chunk != NULL) {
+    available++;
+    free_chunk = *(void**)free_chunk;
+  }
+
+  return available;
 }

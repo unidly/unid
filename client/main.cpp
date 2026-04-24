@@ -7,39 +7,57 @@
 
 #include "main.hpp"
 
+#include "common/quill.hpp"
 #include "network/udp_client.hpp"
-
-#include "asio.hpp"
-
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
+#include "asio.hpp"
+
 #include <iostream>
+
+extern quill::Logger *global_logger_a;
 
 int main(int argc, char *argv[]) {
   // Start file logging
+  setup_quill("unid_server.log");
 
   // Load startup configuration
 
-  /*
-  try {
-    if (argc != 3) {
-      std::cerr << "Usage: udp_client <host> <service (port number)>"
-                << std::endl;
-      return 1;
+  asio::io_context io_context;
+
+  // Send and receive callback
+  auto async_send_callback = [](const asio::error_code &ec,
+                                std::size_t bytes_transferred) {
+    if (!ec) {
+      LOG_DEBUG(global_logger_a, "async_send_callback registered");
+    } else {
+      LOG_ERROR(global_logger_a, "async_send_callback error: {}", ec.message());
     }
+  };
 
-    asio::io_context io_context;
-    // Create the client object, which initiates the async operations
-    Udp_client client(io_context, argv[1], argv[2]);
+  auto async_receive_callback = [](const asio::error_code &ec,
+                                   std::size_t bytes_transferred) {
+    if (!ec) {
+      LOG_DEBUG(global_logger_a, "async_receive_callback registered");
+    } else {
+      LOG_ERROR(global_logger_a, "async_receive_callback error: {}",
+                ec.message());
+    }
+  };
 
-    // Run the io_context to start the asynchronous operations
-    std::cout << "Starting io_context.run()" << std::endl;
-    io_context.run();
-  } catch (std::exception &e) {
-    std::cerr << "Exception: " << e.what() << std::endl;
-  }
-  */
+  Udp_client c(io_context, "127.0.0.1", "443", global_logger_a);
+
+  // Register the callbacks
+  c.set_async_receive_callback(async_receive_callback);
+  c.set_async_send_callback(async_send_callback);
+
+  // Start the udp asynch server
+  io_context.run();
+
+  // Wait here and pretend you are doing something
+  std::cout << "Press Enter to exit...";
+  std::cin.get();
 
   return 0;
 }

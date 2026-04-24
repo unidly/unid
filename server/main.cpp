@@ -11,7 +11,6 @@
 #include "network/udp_server.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
-// #include "../common/include/common/quill.hpp"
 
 #include <asio.hpp>
 
@@ -29,24 +28,23 @@ int main(int argc, char *argv[]) {
 
   asio::io_context io_context;
 
-  // Register send and receive callback functions
+  // Send and receive callback
   auto async_send_callback = [](const asio::error_code &ec,
                                 std::size_t bytes_transferred) {
     if (!ec) {
-      // LOG_DEBUG(global_logger_a, "async_send_callback registered");
+      LOG_DEBUG(global_logger_a, "async_send_callback registered");
     } else {
-      // LOG_ERROR(globbal_logger_a, "async_send_callback error: {}",
-      // ec.message());
+      LOG_ERROR(global_logger_a, "async_send_callback error: {}", ec.message());
     }
   };
 
   auto async_receive_callback = [](const asio::error_code &ec,
                                    std::size_t bytes_transferred) {
     if (!ec) {
-      // LOG_DEBUG(global_logger_a, "async_receive_callback registered");
+      LOG_DEBUG(global_logger_a, "async_receive_callback registered");
     } else {
-      // LOG_ERROR(global_logger_a, "async_receive_callback error: {}",
-      // ec.message());
+      LOG_ERROR(global_logger_a, "async_receive_callback error: {}",
+                ec.message());
     }
   };
 

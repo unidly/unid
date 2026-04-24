@@ -1,5 +1,13 @@
 # Unid Detailed Design Document
 
+## Standards
+
+The following standards are used for development of Unid software:
+
+* [Unid C++ Core Guidelines](ihttps://github.com/unidly/unid/blob/main/doc/unidly-cpp-guidelines.md) - Project version Based on CPP Core Guidleines
+* [XDG Base Directory Specification](https://specifications.freedesktop.org/basedir/latest/) - File locations
+* Coding and File format standards are enforced with ClangFormat, CmakeFormat (see Toolsets)
+
 ## Toolset
 
 The following software tools are used for unid development:
@@ -10,6 +18,7 @@ The following software tools are used for unid development:
 * [ClangFormat](https://clang.llvm.org/docs/ClangFormat.html) 15.0.7 - Source code format tool
 * [Valgrind](https://valgrind.org/info/) 3.19.0 - Runtime leak analyzer
 * [Cmake](https://cmake.org/) 4.2.3 - Build files generator
+* [CmakeFormat]() - Cmake file formatter
 * [Doxygen](doxygen.nl) 1.16.1 - Documentation generator
 * [Conan](https://conan.io) - C/C++ Package manager
 * [Benchmark](https://github.com/google/benchmark) - Google's benchmark library
@@ -24,6 +33,7 @@ These libraries are used by Unid software:
 * [Quiche (google)](https://google/quiche/) - QUIC transport layer protocol
 * [Asio](https://think-async.com/Asio/AsioStandalone.html) 1.36.0 - Asynchronous network I/O
 * [Quill](https://github.com/odygrd/quill) 11.1.0 - High performance logger
+* [Toml++](https://github.com/marzer/tomlplusplus) 3.4.0 - Configuration file management
 
 Note about Quiche: The google implementation of QUIC does not contain an API
 interface. It uses Bazel for a build platform. An acknowledged implementation for

@@ -9,6 +9,7 @@
 #define UDP_SERVER_HPP
 
 #include "asio.hpp"
+#include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
 #include <cstddef>    // std::size_t
@@ -36,10 +37,27 @@ public:
    * @param port Port number
    */
   Udp_server(asio::io_context &io_context, short port, quill::Logger *logger);
-
   ~Udp_server();
 
-  short get_port() { return server_endpoint_.port(); }
+  /**
+   * @brief Returns the local endpoint address of the socket
+   *
+   * The local endpoint contains address and port of server's local socket.
+   *
+   * @return The local endpoint port
+   */
+  std::string get_local_address() {
+    return local_endpoint_.address().to_string();
+  }
+
+  /**
+   * @brief Returns the local endpoint port of the socket
+   *
+   * The local endpoint contains address and port of server's local socket.
+   *
+   * @return The local endpoint port
+   */
+  short get_local_port() { return local_endpoint_.port(); }
 
   /**
    * @brief Set a callback for the receive datagram
@@ -49,6 +67,7 @@ public:
    * @param cb The callback function, lambda or functor
    */
   void set_async_receive_callback(Callback_type cb) {
+    LOG_INFO(Udp_server::logger_, "Receive callback set");
     async_receive_callback_ = cb;
   }
 
@@ -64,13 +83,16 @@ public:
    *
    * @param cb The callback function, lambda or functor
    */
-  void set_async_send_callback(Callback_type cb) { async_send_callback_ = cb; }
+  void set_async_send_callback(Callback_type cb) {
+    LOG_INFO(Udp_server::logger_, "Send callback set");
+    async_send_callback_ = cb;
+  }
 
   /**
-   * @brief Set up to receive a udp datagram
+   * @brief Setup to receive a udp datagram
    *
    * The caller supplies a buffer with its length to the Udp Server, and
-   * starts an anynchrouous receive operation by calling asynch_receive().
+   * starts an anynchrouous receive operation by calling receiver_from().
    *
    * When asynch_receive() receives a datagram, it executes a callback to
    * the caller with the data and address information.
@@ -151,7 +173,7 @@ private:
   // recieve_from functions provide the buffers used by this server
   quill::Logger *logger_;
   udp::socket socket_;
-  udp::endpoint server_endpoint_;
+  udp::endpoint local_endpoint_;
   Callback_type async_receive_callback_;
   Callback_type async_send_callback_;
 

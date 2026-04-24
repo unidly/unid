@@ -12,6 +12,7 @@ class MyProject(ConanFile):
         self.requires("catch2/3.13.0")
         self.requires("ms-gsl/4.2.0")
         self.requires("quill/11.0.2")
+        self.requires("tomlplusplus/3.4.0")
 
     def layout(self):
         # Uses standard CMake layout (build folders, etc.)

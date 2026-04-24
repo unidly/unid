@@ -9,6 +9,7 @@
 #define UDP_CLIENT_HPP
 
 #include "asio.hpp"
+#include "quill/Logger.h"
 
 #include <cstdint>    // uintXX_t
 #include <functional> // std::function()
@@ -33,10 +34,11 @@ public:
    *
    * @param io_context Asio event loop manager for asynch ops
    * @param host IPv4 address of the server
-   * @param port Well known service port name or port number
+   * @param service Port number or well known service name
+   * @param logger Global logger pointer
    */
   Udp_client(asio::io_context &io_context, const std::string &host,
-             const std::string &service);
+             const std::string &service, quill::Logger *logger);
 
   ~Udp_client();
 
@@ -143,9 +145,10 @@ private:
   void async_send();
 
   // Private member variables
+  quill::Logger *logger_;
   asio::io_context &io_context_;
   udp::socket socket_;
-  udp::endpoint receiver_endpoint_;
+  udp::endpoint remote_endpoint_;
   Callback_type async_receive_callback_;
   Callback_type async_send_callback_;
 

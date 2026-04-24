@@ -16,6 +16,13 @@ extern "C" {
 
 #include <cstddef> // for std::size_t
 
+struct Mempool_stats {
+  std::size_t chunk_sz;  /**< Number of bytes in a chunk */
+  std::size_t pool_sz;   /**< Number of chunks in the pool */
+  std::size_t extra_sz;  /**< Number of chunks added with mempool_extend() */
+  std::size_t available; /**< Number of chunks available */
+};
+
 /**
  * @class Mempool
  * @brief This class provides a c++ interface to libpool.
@@ -51,17 +58,21 @@ public:
    *
    * @return a pointer to a chunk of memory
    */
-  void* mempool_alloc() { return pool_alloc(Mempool::pool_); }
+  void* alloc() { return pool_alloc(Mempool::pool_); }
 
   /**
-   * @brief Frees a block after the caller doesn't need it anymore
+   * @brief Frees a chunk after the caller doesn't need it anymore
    *
    * @param ptr Pointer to the chunk to free
    */
-  void mempool_free(void* ptr) { pool_free(Mempool::pool_, ptr); }
+  void free(void* ptr) { pool_free(Mempool::pool_, ptr); }
 
   /**
    * @brief Increase the number of chunks in the pool
+   *
+   * This member function enlarges the memory pool number of available
+   * chunks. Mempool does not support reducing the number of chunks once
+   * allocated to the pool
    *
    * @note The total number of chunks in the pool are equal to the
    * the pool_sz + extra_sz. This function can be called, multiple times
@@ -72,13 +83,25 @@ public:
    * @return True OK, otherwise throws an exception
    * @throws std::runtime_error if memory allocation fails
    */
-  bool mempool_expand(std::size_t extra_sz);
+  bool expand(std::size_t extra_sz);
+
+  /**
+   * @brief Returns statistics about the mempool variables
+   *
+   * The libpool library does not provide a function to return the number of
+   * unused chunks. This member function traverses the chunks in the free
+   * chunk list, and counts them.
+   *
+   * @returns Mempool statistics (see structure)
+   */
+  struct Mempool_stats stats();
 
 private:
-  std::size_t pool_sz_;  /**< Number of chunks in the pool */
-  std::size_t chunk_sz_; /**< Size in bytes of a chunk */
-  std::size_t extra_sz_; /**< Extra chunks added to the pool (cumulative) */
-  Pool* pool_;           /**< Raw pointer to the pool struct */
+  quill::Logger* logger_; /**< Logger object */
+  std::size_t chunk_sz_;  /**< Size in bytes of a chunk */
+  std::size_t pool_sz_;   /**< Number of chunks in the pool */
+  std::size_t extra_sz_;  /**< Extra chunks added to the pool (cumulative) */
+  Pool* pool_;            /**< Raw pointer to the pool struct */
 };
 
 #endif // MEMPOOL_HPP

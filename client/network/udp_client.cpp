@@ -7,15 +7,18 @@
 
 #include "./udp_client.hpp"
 
+#include "quill/LogMacros.h"
+#include "quill/Logger.h"
+
 #include <asio.hpp>
 
 // Constructor()
 Udp_client::Udp_client(asio::io_context &io_context, const std::string &host,
-                       const std::string &service)
-    : io_context_(io_context), socket_(io_context) {
+                       const std::string &service, quill::Logger *logger)
+    : io_context_(io_context), socket_(io_context), logger_{logger} {
   // Define the endpoint
   udp::resolver resolver(io_context_);
-  udp::endpoint receiver_endpoint_ =
+  udp::endpoint remote_endpoint_ =
       *resolver.resolve(udp::v4(), host, service).begin();
 
   // Open the socket
@@ -44,12 +47,12 @@ void Udp_client::send_to(const char *buffer, size_t length,
 void Udp_client::async_receive() {
   socket_.async_receive_from(
       asio::buffer(Udp_client::rx_buffer_, Udp_client::rx_length_),
-      Udp_client::receiver_endpoint_, Udp_client::async_receive_callback_);
+      Udp_client::remote_endpoint_, Udp_client::async_receive_callback_);
 }
 
 // async_send()
 void Udp_client::async_send() {
   socket_.async_send_to(asio::buffer(tx_buffer_, Udp_client::tx_length_),
-                        Udp_client::receiver_endpoint_,
+                        Udp_client::remote_endpoint_,
                         Udp_client::async_send_callback_);
 }

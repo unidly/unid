@@ -1,6 +1,6 @@
 /**
  * @file
- * @brief UDP server implementation using asio asynchronouse I/O
+ * @brief UDP server implementation using asio
  *
  * @copyright Copyright 2026 by Unidly, LLC. All rights reserved.
  */
@@ -17,6 +17,7 @@ Udp_server::Udp_server(asio::io_context &io_context, short port,
                        quill::Logger *logger)
     : socket_(io_context, udp::endpoint(udp::v4(), port)), logger_{logger} {
   LOG_DEBUG(Udp_server::logger_, "Udp_server()");
+  Udp_server::local_endpoint_ = socket_.local_endpoint();
 }
 
 // Destructor()
@@ -44,12 +45,12 @@ void Udp_server::send_to(const char *buffer, size_t length,
 void Udp_server::async_receive() {
   socket_.async_receive_from(
       asio::buffer(Udp_server::rx_buffer_, Udp_server::rx_length_),
-      Udp_server::server_endpoint_, Udp_server::async_receive_callback_);
+      Udp_server::local_endpoint_, Udp_server::async_receive_callback_);
 }
 
 // async_send()
 void Udp_server::async_send() {
   socket_.async_send_to(asio::buffer(tx_buffer_, Udp_server::tx_length_),
-                        Udp_server::server_endpoint_,
+                        Udp_server::local_endpoint_,
                         Udp_server::async_send_callback_);
 }

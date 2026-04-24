@@ -16,6 +16,7 @@ find_package(asio REQUIRED) # Header only
 find_package(Microsoft.GSL REQUIRED) # Header only
 find_package(quill REQUIRED)
 find_package(Catch2 3 REQUIRED)
+find_package(tomlplusplus REQUIRED)
 
 # This project results in two executables: unid_server and unid_client Common
 # project libraries are maintained and compiled in common Project unit tests are
