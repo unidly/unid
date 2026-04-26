@@ -15,3 +15,5 @@ target_link_libraries(
          quill::quill
   PRIVATE common
 )
+
+message(STATUS "Quill library Search paths: ${quill_INCLUDE_DIRS}")

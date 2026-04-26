@@ -13,6 +13,8 @@
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
+#include <filesystem>
+
 /**
  * @class Config
  * @brief Manages and distributes configuration parameters to the application
@@ -40,11 +42,9 @@ public:
    * Loads and parses the unid.toml file that contains the configuration
    * data.
    *
-   * @todo Automatically find the file path searching XGD
-   * @param file_path Location of the unid.toml file
    * @param logger Pointer to logger
    */
-  Config(std::string_view file_path, quill::Logger* logger);
+  Config(quill::Logger* logger);
 
   /**
    * @brief Config class destructor
@@ -79,7 +79,7 @@ public:
    * has within it additional embedded tables providing a hierarchy for
    * accessing data. These tables are implemented as hash tables internally.
    *
-   * Here is a simple example using a fragment of unid.toml:
+   * Here is a simple example:
    *
    * ```
    * [database]
@@ -87,12 +87,12 @@ public:
    * port = 5432
    * name = "production_db"
    * user = "admin"
-   * password = "${DB_PASSWORD}"  # Best practice: use env variables for secrets
+   * password = "${DB_PASSWORD}"  # Use env variables for secrets
    * enabled = true
    * connection_max = 5000
    * ```
    * auto port = get_as<unsigned short>("database", "port", 2334);
-   * returns 5432, or default of 2334
+   * returns 5432
    *
    * @tparam T The data type of the value and the default_value
    * @param table The key of the key:value pair
@@ -108,6 +108,25 @@ public:
   }
 
 private:
+  /**
+   * @brief Returns the path where unid can access the unid.toml file
+   *
+   * The location of the unid.toml configuration can be located in one of two
+   * places: ~/.config/unid.toml or /etc/unid/unid.toml. If the file is
+   * found in the home directory, that file us used as it has priority over the
+   * system configuration file. If there is no ~/.config/Unid.toml or of $HOME
+   * is not set, then /etc/unid/unid.toml is used.
+   *
+   * @note The use of the home directory based configuration file should only
+   * be used during development. Outside of the development environment, the
+   * /etc/unid/unid.toml file should be used and the unid.toml file should be
+   * removed from ~/.config
+   *
+   * @return Filepath to unid.toml
+   * @throws runtime exception if configuration file not found.
+   */
+  std::string get_unid_filepath();
+
   quill::Logger* logger_; /**< Logger object */
   toml::table config_;    /**< Configuration data in toml++ format*/
 };

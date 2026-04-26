@@ -13,9 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # These libraries are used in server, client and common We "find them" here for
 # their ingestion
 find_package(asio REQUIRED) # Header only
+find_package(benchmark REQUIRED)
+find_package(Catch2 3 REQUIRED)
 find_package(Microsoft.GSL REQUIRED) # Header only
 find_package(quill REQUIRED)
-find_package(Catch2 3 REQUIRED)
 find_package(tomlplusplus REQUIRED)
 
 # This project results in two executables: unid_server and unid_client Common

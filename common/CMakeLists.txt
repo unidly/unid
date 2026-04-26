@@ -22,7 +22,7 @@ target_include_directories(
   PRIVATE "src/"
 )
 
-# Link to third - party libraries used in common_lib
+# Link to external libraries used in common library
 target_link_libraries(
   common
   PUBLIC asio::asio
@@ -30,3 +30,6 @@ target_link_libraries(
          quill::quill
          tomlplusplus::tomlplusplus
 )
+
+get_target_property(MY_INCLUDES common INCLUDE_DIRECTORIES)
+message(STATUS "Common library Search paths: ${MY_INCLUDES}")

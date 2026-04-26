@@ -23,6 +23,6 @@ extern quill::Logger* global_logger_a;
 TEST_CASE("Config constructor", "[config]") {
   // Set the logger
   setup_quill("unid_test.log");
-  Config config("/home/msellers/unid.toml", global_logger_a);
-  REQUIRE_NOTHROW(Config("/home/msellers/unid.toml", global_logger_a));
+  Config config(global_logger_a);
+  REQUIRE_NOTHROW(Config(global_logger_a));
 }

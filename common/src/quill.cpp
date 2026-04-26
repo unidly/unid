@@ -1,8 +1,8 @@
 /**
  * @file
- * @brief Quill static library implementatoin
+ * @brief Quill static library implementation
  */
-#include "../include/common/quill.hpp"
+#include "common/quill.hpp"
 
 #include "quill/Backend.h"
 #include "quill/Frontend.h"
@@ -11,7 +11,7 @@
 
 // Global logger. We externally declair this in main, and then
 // access it by dependency injection into the classes
-quill::Logger *global_logger_a; // General purpose logger
+quill::Logger* global_logger_a; // General purpose logger
 
 /**
  * @brief Setup quill filesink and create a global logger
@@ -30,7 +30,7 @@ quill::Logger *global_logger_a; // General purpose logger
  *
  * @param log_file The name and filepath of the log file
  */
-void setup_quill(char const *log_file) {
+void setup_quill(char const* log_file) {
   // Start the backend thread
   quill::Backend::start();
 
