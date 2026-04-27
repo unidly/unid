@@ -24,7 +24,7 @@ Mempool::Mempool(std::size_t pool_sz, std::size_t chunk_sz,
     LOG_CRITICAL(logger, "Failed to initialize libpool");
     throw std::runtime_error("Failed to initialize libpool");
   }
-  LOG_INFO(logger, "Mempool object");
+  LOG_INFO(logger, "Mempool object created");
 }
 
 Mempool::~Mempool() {

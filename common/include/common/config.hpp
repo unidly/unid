@@ -43,6 +43,7 @@ public:
    * data.
    *
    * @param logger Pointer to logger
+   * @throws Runtime error if unid.coml is not found
    */
   Config(quill::Logger* logger);
 
@@ -52,7 +53,7 @@ public:
   ~Config();
 
   /**
-   * @brief Retrieves a configuration value of a given type with default
+   * @brief Retrieves a config value of a given type or default
    *
    * This function accesses the toml++ configuration table, and returns the
    * value of a given key. If they key is not found, then the default value
@@ -64,7 +65,9 @@ public:
    * @return The value  of the key:value pair, or the default
    */
   template <typename T>
-  T get_as(std::string_view key, T&& default_value) const {
+  inline T get_as(std::string_view key, T&& default_value) const {
+    LOG_DEBUG(logger_, "Config::get_as() key: {} default_value: {}", key,
+              default_value);
     return config_[key].value_or(std::forward<T>(default_value));
   }
 
@@ -79,7 +82,7 @@ public:
    * has within it additional embedded tables providing a hierarchy for
    * accessing data. These tables are implemented as hash tables internally.
    *
-   * Here is a simple example:
+   * Here is a simple usage example:
    *
    * ```
    * [database]
@@ -102,8 +105,8 @@ public:
    *
    */
   template <typename T>
-  T get_as(std::string_view table, std::string_view key,
-           T&& default_value) const {
+  inline T get_as(std::string_view table, std::string_view key,
+                  T&& default_value) const {
     return config_[table][key].value_or(std::forward<T>(default_value));
   }
 
@@ -125,7 +128,7 @@ private:
    * @return Filepath to unid.toml
    * @throws runtime exception if configuration file not found.
    */
-  std::string get_unid_filepath();
+  std::string get_unid_filepath() const;
 
   quill::Logger* logger_; /**< Logger object */
   toml::table config_;    /**< Configuration data in toml++ format*/

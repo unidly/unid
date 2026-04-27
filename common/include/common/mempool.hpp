@@ -23,6 +23,8 @@ struct Mempool_stats {
   std::size_t available; /**< Number of chunks available */
 };
 
+#define LIBPOOL_LOG(str) LOG_DEBUG(logger_, (str))
+
 /**
  * @class Mempool
  * @brief This class provides a c++ interface to libpool.

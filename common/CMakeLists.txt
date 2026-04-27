@@ -5,15 +5,12 @@ add_library(
   "src/libpool.c"
   "src/mempool.cpp"
   "src/config.cpp"
+  "src/utility.cpp"
 )
 
+# Source file based compiler options and definitions
 set_source_files_properties("src/config.cpp" PROPERTIES COMPILE_OPTIONS "-w")
-
-# Specific compiler flags for building the common library
-#target_compile_definitions(
-#  common
-#  PRIVATE LIBPOOL_NO_VALGRIND
-#)
+set_source_files_properties("src/libpool.cpp" PROPERTIES COMPILE_DEFINITIONS "LIBPOOL_NO_VALGRIND")
 
 # Publically accessible include files
 target_include_directories(

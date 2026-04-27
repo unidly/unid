@@ -20,9 +20,18 @@ extern quill::Logger* global_logger_a;
 // clang-format off
 
 // Constructor
-TEST_CASE("Config constructor", "[config]") {
-  // Set the logger
+TEST_CASE("Constructor load/parse", "[config]") {
   setup_quill("unid_test.log");
-  Config config(global_logger_a);
+  //Config Config(global_logger_a);
   REQUIRE_NOTHROW(Config(global_logger_a));
+}
+
+TEST_CASE("get_as()", "[config]") {
+  setup_quill("unid_test.log");
+  global_logger_a->set_log_level(quill::LogLevel::Debug);
+  Config c(global_logger_a);
+
+  std::string title = c.get_as<std::string>("title", "Default title");
+  REQUIRE(title == "Unid Configuration");
+  global_logger_a->set_log_level(quill::LogLevel::Info);
 }

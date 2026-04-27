@@ -6,10 +6,12 @@ target_sources(
           ../client/network/udp_client.cpp
           ../common/src/mempool.cpp
           ../common/src/config.cpp
+          ../common/src/utility.cpp
           server_network_udp_test.cpp
           client_network_udp_test.cpp
           common_mempool_test.cpp
           common_config_test.cpp
+          common_utility_test.cpp
 )
 
 set_source_files_properties("../common/src/config.cpp" PROPERTIES COMPILE_OPTIONS "-w")

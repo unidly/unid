@@ -5,6 +5,7 @@
  */
 
 #include "common/config.hpp"
+#include "common/string_constants.hpp"
 
 #define TOML_HEADER_ONLY 0
 #include <toml++/toml.hpp>
@@ -17,12 +18,9 @@
 
 namespace fs = std::filesystem;
 
-constexpr std::string_view default_config_filepath{"/etc/unid/unid.toml"};
-
 Config::Config(quill::Logger* logger) : logger_{logger} {
   try {
-    std::string file_path = Config::get_unid_filepath();
-    config_ = toml::parse_file(file_path);
+    config_ = toml::parse_file(Config::get_unid_filepath());
     LOG_INFO(logger, "Config object created");
   } catch (const toml::parse_error& err) {
     LOG_CRITICAL(logger, "Config object creation failed");
@@ -47,15 +45,14 @@ Config::~Config() { LOG_INFO(logger_, "Config object destroyed"); }
  *
  * @throws runtime error if configuration file not found
  */
-std::string Config::get_unid_filepath() {
+std::string Config::get_unid_filepath() const {
   std::string filepath;
 
 #ifndef NDEBUG
   // Try home path
-  std::string home = std::getenv("HOME");
   if (!home.empty()) {
-    filepath = home + "/.config/unid.toml";
-    fs::path p(filepath);
+    filepath = config_home_filepath;
+    fs::path p{filepath};
     if (fs::exists(p)) {
       LOG_INFO(logger_, "Using config file: {}", filepath);
       return filepath;
@@ -64,10 +61,10 @@ std::string Config::get_unid_filepath() {
 #endif
 
   // Try system path
-  filepath = default_config_filepath;
-  fs::path p(filepath);
+  filepath = config_system_filepath;
+  fs::path p{filepath};
   if (!fs::exists(p)) {
-    throw std::runtime_error("Configuration file, unid.toml, not found");
+    throw std::runtime_error("error: unid.toml not found");
   }
 
   // Not found!
