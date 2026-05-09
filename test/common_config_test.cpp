@@ -6,23 +6,25 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "common/config.hpp"
-
 #include "common/quill.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
 #include <asio.hpp>
 #include <iostream>
+#include <string>
+#include <string_view>
 #include <thread>
 
 extern quill::Logger* global_logger_a;
 
+using namespace std::string_literals;
+using namespace std::string_view_literals;
+
 // clang-format off
 
-// Constructor
 TEST_CASE("Constructor load/parse", "[config]") {
   setup_quill("unid_test.log");
-  //Config Config(global_logger_a);
   REQUIRE_NOTHROW(Config(global_logger_a));
 }
 
@@ -31,7 +33,25 @@ TEST_CASE("get_as()", "[config]") {
   global_logger_a->set_log_level(quill::LogLevel::Debug);
   Config c(global_logger_a);
 
-  std::string title = c.get_as<std::string>("title", "Default title");
+  std::optional<std::string> title = c.get_as<std::string>("", "title"s);
   REQUIRE(title == "Unid Configuration");
+
+  std::optional<std::int64_t> intval = c.get_as<std::int64_t>("","intval"s);
+  REQUIRE(intval == 12);
+  intval = c.get_as<std::int64_t>("", "not_found"s);
+  REQUIRE(intval == std::nullopt);
+
+  std::optional<double> floatval = c.get_as<double>("", "floatval"s);
+  REQUIRE(floatval == 12.34);
+  floatval = c.get_as<double>("","not_found"s);
+  REQUIRE(floatval == std::nullopt);
+
+  std::optional<bool> booleanval = c.get_as<bool>("", "booleanval"s);
+  REQUIRE(booleanval == true);
+  booleanval = c.get_as<bool>("", "not_found"s);
+  REQUIRE(booleanval == std::nullopt);
+
   global_logger_a->set_log_level(quill::LogLevel::Info);
 }
+
+// clang-format on

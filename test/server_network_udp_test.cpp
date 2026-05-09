@@ -15,7 +15,7 @@
 #include <iostream>
 #include <thread>
 
-extern quill::Logger *global_logger_a;
+extern quill::Logger* global_logger_a;
 
 // clang-format off
 
@@ -24,9 +24,13 @@ TEST_CASE("Network Udp Server Tests", "[constructor]") {
   // Set the logger
   setup_quill("unid_test.log");
 
+  // Set the configuration
+  Config c(global_logger_a);
+  Config* configure = &c;
+
   // Start the server
   asio::io_context io_context;
-  Udp_server udp_server(io_context, 12346, global_logger_a);
+  Udp_server udp_server(io_context, 12346, global_logger_a, configure);
 
   // Run in a separate thread
   std::thread io_thread([&io_context]() {

@@ -7,6 +7,7 @@
 
 #include "main.hpp"
 
+#include "common/config.hpp"
 #include "common/quill.hpp"
 #include "network/udp_server.hpp"
 #include "quill/LogMacros.h"
@@ -17,19 +18,21 @@
 #include <functional>
 #include <iostream>
 
-extern quill::Logger *global_logger_a;
+extern quill::Logger* global_logger_a;
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Setup logger
   setup_quill("unid_server.log");
 
   // Load startup configuration
+  Config c(global_logger_a);
+  Config* configure = &c;
   short port = 443;
 
   asio::io_context io_context;
 
   // Send and receive callback
-  auto async_send_callback = [](const asio::error_code &ec,
+  auto async_send_callback = [](const asio::error_code& ec,
                                 std::size_t bytes_transferred) {
     if (!ec) {
       LOG_DEBUG(global_logger_a, "async_send_callback registered");
@@ -38,7 +41,7 @@ int main(int argc, char *argv[]) {
     }
   };
 
-  auto async_receive_callback = [](const asio::error_code &ec,
+  auto async_receive_callback = [](const asio::error_code& ec,
                                    std::size_t bytes_transferred) {
     if (!ec) {
       LOG_DEBUG(global_logger_a, "async_receive_callback registered");
@@ -49,7 +52,7 @@ int main(int argc, char *argv[]) {
   };
 
   // Start the server
-  Udp_server s(io_context, port, global_logger_a);
+  Udp_server s(io_context, port, global_logger_a, configure);
 
   // Register the callbacks
   s.set_async_receive_callback(async_receive_callback);

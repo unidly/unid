@@ -9,6 +9,7 @@
 #define UDP_SERVER_HPP
 
 #include "asio.hpp"
+#include "common/config.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
@@ -25,7 +26,7 @@ using asio::ip::udp;
  */
 class Udp_server {
 public:
-  using Callback_type = std::function<void(const asio::error_code &error,
+  using Callback_type = std::function<void(const asio::error_code& error,
                                            std::size_t bytes_tranferred)>;
 
   /**
@@ -36,7 +37,8 @@ public:
    * @param io_context Asio event loop manager for asynch ops
    * @param port Port number
    */
-  Udp_server(asio::io_context &io_context, short port, quill::Logger *logger);
+  Udp_server(asio::io_context& io_context, short port, quill::Logger* logger,
+             Config* configure);
   ~Udp_server();
 
   /**
@@ -108,7 +110,7 @@ public:
    * @param buffer A buffer supplied by the caller
    * @param length The size of the buffer
    */
-  void receive_from(char *buffer, std::size_t length);
+  void receive_from(char* buffer, std::size_t length);
 
   /**
    * @brief Setup to send a udp datagram
@@ -126,8 +128,8 @@ public:
    * @para length The length of data in bytes
    * @param client_address The address info required to deliver the datagram
    */
-  void send_to(const char *buffer, std::size_t length,
-               const struct sockaddr_in &client_address);
+  void send_to(const char* buffer, std::size_t length,
+               const struct sockaddr_in& client_address);
 
 private:
   // Private member functions
@@ -171,14 +173,15 @@ private:
   // @TODO The data buffers are provided by the application in the final
   // design. A buffer pool is implemented and the async sendto and
   // recieve_from functions provide the buffers used by this server
-  quill::Logger *logger_;
+  Config* configure__;
+  quill::Logger* logger_;
   udp::socket socket_;
   udp::endpoint local_endpoint_;
   Callback_type async_receive_callback_;
   Callback_type async_send_callback_;
 
-  char *rx_buffer_;       /**< Pointer to the supplied receive data buffer */
-  const char *tx_buffer_; /**< Pointer to the supplied transmit data buffer */
+  char* rx_buffer_;       /**< Pointer to the supplied receive data buffer */
+  const char* tx_buffer_; /**< Pointer to the supplied transmit data buffer */
   std::size_t rx_length_; /**< Total length of rx buffer */
   std::size_t tx_length_; /**< Actual length of tx data */
 };

@@ -7,14 +7,15 @@
 
 #include "./udp_server.hpp"
 
+#include "common/config.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
 #include <asio.hpp>
 
 // Constructor()
-Udp_server::Udp_server(asio::io_context &io_context, short port,
-                       quill::Logger *logger)
+Udp_server::Udp_server(asio::io_context& io_context, short port,
+                       quill::Logger* logger, Config* config)
     : socket_(io_context, udp::endpoint(udp::v4(), port)), logger_{logger} {
   LOG_DEBUG(Udp_server::logger_, "Udp_server()");
   Udp_server::local_endpoint_ = socket_.local_endpoint();
@@ -27,15 +28,15 @@ Udp_server::~Udp_server() {
 }
 
 // receive_from()
-void Udp_server::receive_from(char *buffer, size_t length) {
+void Udp_server::receive_from(char* buffer, size_t length) {
   Udp_server::rx_buffer_ = buffer;
   Udp_server::rx_length_ = length;
   Udp_server::async_receive(); // Start the receiver
 }
 
 // send_to()
-void Udp_server::send_to(const char *buffer, size_t length,
-                         const struct sockaddr_in &client_address) {
+void Udp_server::send_to(const char* buffer, size_t length,
+                         const struct sockaddr_in& client_address) {
   Udp_server::tx_buffer_ = buffer;
   Udp_server::tx_length_ = length;
   Udp_server::async_receive(); // Start the receiver
