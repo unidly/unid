@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # These libraries are used in server, client and common We "find them" here for
-# their ingestion
+# their access
 find_package(asio REQUIRED) # Header only
 find_package(benchmark REQUIRED)
 find_package(Catch2 3 REQUIRED)
