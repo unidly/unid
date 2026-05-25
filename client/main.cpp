@@ -49,10 +49,18 @@ int main(int argc, char* argv[]) {
   Udp_client c(io_context, host.value(), service.value(), mempool,
                global_logger_a);
 
+  std::cout << "Remote_port:  " << c.get_remote_port() << std::endl;
+  std::cout << "Remote_address: " << c.get_remote_address() << std::endl;
+
   // Send data to server
-  char buffer[] = {0x01, 0x02, 0x03, 0x04, 0x05};
+  char* chunk = mempool.alloc();
+  chunk[0] = 1;
+  chunk[1] = 2;
+  chunk[2] = 3;
+  chunk[3] = 4;
+  chunk[4] = 5;
   std::size_t length = 5;
-  c.async_send(buffer, length);
+  c.async_send(chunk, length);
 
   // Wait here and pretend you are doing something
   std::cout << "Press Enter to exit...";

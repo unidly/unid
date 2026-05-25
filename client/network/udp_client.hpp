@@ -73,10 +73,6 @@ public:
    * There is no guarantee that the datagram was received. The application
    * is responsible for acknowledgement that the data was received by the
    * client via a data layer protocol.
-   *
-   * @note asynch_send_callback_ must be set prior to async_send()
-   *
-   * @param length The length of the data to be transmitted
    */
   void async_send(char* buffer, size_t length);
 

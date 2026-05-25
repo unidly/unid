@@ -29,8 +29,7 @@ Udp_client::Udp_client(asio::io_context& io_context, const std::string& host,
 
   // Define the server endpoint
   udp::resolver resolver(io_context_);
-  udp::endpoint remote_endpoint_ =
-      *resolver.resolve(udp::v4(), host, service).begin();
+  remote_endpoint_ = *resolver.resolve(udp::v4(), host, service).begin();
 
   // Open the socket and start listening
   socket_.open(udp::v4());
@@ -45,6 +44,7 @@ Udp_client::~Udp_client() {
 
 // async_receive()
 void Udp_client::async_receive() {
+  LOG_DEBUG(logger_, "async_receive() enter");
   auto chunk = mempool_.alloc();
   socket_.async_receive_from(
       asio::buffer(chunk, chunk_size_), remote_endpoint_,
@@ -61,20 +61,26 @@ void Udp_client::async_receive() {
           async_receive();
         } else {
           // Handle error code
+          std::cerr << "Receive failed: " << ec.message() << std::endl;
         }
       });
+  LOG_DEBUG(logger_, "asynch_receive() exit");
 }
 
 // async_send()
 void Udp_client::async_send(char* chunk, size_t length) {
+  LOG_DEBUG(logger_, "async_send() enter");
   socket_.async_send_to(
       asio::buffer(chunk, length), remote_endpoint_,
-      [this, chunk](std::error_code ec, std::size_t byte_received) {
+      [this, chunk](std::error_code ec, std::size_t bytes_sent) {
         if (!ec) {
-          std::cout << "async_send() complete" << std::endl;
+          std::cout << "\nasync_send() complete " << bytes_sent << " bytes sent"
+                    << std::endl;
           mempool_.free(chunk);
         } else {
           // Handle error code
+          std::cerr << "\nSend failed: " << ec.message() << std::endl;
         }
       });
+  LOG_DEBUG(logger_, "async_send() exit");
 }
