@@ -22,12 +22,12 @@ Udp_client::Udp_client(asio::io_context& io_context, const std::string& host,
                        quill::Logger* logger)
     : io_context_(io_context), socket_(io_context),
       mempool_(mempool), logger_{logger} {
-  LOG_DEBUG(logger_, "Udp_client()");
+  LOG_INFO(logger_, "Udp_client()");
 
   // Get mempool chunk size
   auto chunk_size_ = (mempool_.stats()).chunk_sz;
 
-  // Define the endpoint
+  // Define the server endpoint
   udp::resolver resolver(io_context_);
   udp::endpoint remote_endpoint_ =
       *resolver.resolve(udp::v4(), host, service).begin();
@@ -39,7 +39,7 @@ Udp_client::Udp_client(asio::io_context& io_context, const std::string& host,
 
 // Destructor()
 Udp_client::~Udp_client() {
-  LOG_DEBUG(logger_, "~Udp_client()");
+  LOG_INFO(logger_, "~Udp_client()");
   socket_.close();
 }
 

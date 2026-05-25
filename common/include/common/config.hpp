@@ -102,17 +102,12 @@ public:
    * desired data type.
    *
    * @tparam T The data type of the value (e.g. int64_t, double, boolean, etc)
-   * @param table (optional) Toml table or nested table [tbl.tblnest]
-   * @param key The key of the key:value pair
-   * @return The value  of the key:value pair, or the default
+   * @param keypath The path, including the key of the key:value pair
+   * @return The value of the key
    */
-  template <typename T> std::optional<T> get_as(std::string_view key) const {
-    return config_[key].value<T>();
-  }
-
   template <typename T>
-  std::optional<T> get_as(std::string_view table, std::string_view key) const {
-    return config_[table][key].value<T>();
+  std::optional<T> get_as(std::string_view keypath) const {
+    return config_.at_path(keypath).value<T>();
   }
 
   /**
@@ -274,7 +269,7 @@ private:
   std::string get_unid_filepath() const;
 
   quill::Logger* logger_; /**< Logger object */
-  toml::table config_;    /**< Configuration data in toml++ format*/
+  toml::table config_;    /**< Configuration data in toml++ format */
 };
 
 #endif // CONFIG_HPP

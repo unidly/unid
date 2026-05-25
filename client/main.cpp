@@ -33,14 +33,12 @@ int main(int argc, char* argv[]) {
 
   // Load startup configuration
   Config config(global_logger_a);
-  auto host = config.get_as<std::string>("network.client", "host");
-  auto service = config.get_as<std::string>("network.client", "service");
-  auto pool_size = config.get_as<std::size_t>("network.mempool", "pool_size");
-  auto chunk_size = config.get_as<std::size_t>("network.mempool", "chunk_size");
+  auto host = config.get_as<std::string>("network.client.host");
+  auto service = config.get_as<std::string>("network.client.service");
+  auto pool_size = config.get_as<std::size_t>("network.mempool.pool_size");
+  auto chunk_size = config.get_as<std::size_t>("network.mempool.chunk_size");
 
   // Initialize the memory pool
-  LOG_INFO(global_logger_a, "Creating Mempool pool_size: {} chunk_size{}",
-           pool_size.value(), chunk_size.value());
   Mempool mempool(pool_size.value(), chunk_size.value(), global_logger_a);
 
   // Setup to run Udp_client async functions on a separate thread
@@ -60,11 +58,13 @@ int main(int argc, char* argv[]) {
   std::cout << "Press Enter to exit...";
   std::cin.get();
 
+  // Order here is important
+  work_guard.reset();
+  io_context.stop();
   if (io_thread.joinable()) {
     io_thread.join();
   }
 
-  work_guard.reset();
   LOG_INFO(global_logger_a, "Stopping Unid Client v0.0.1");
   return 0;
 }

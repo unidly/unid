@@ -18,7 +18,7 @@ Udp_server::Udp_server(asio::io_context& io_context, short port,
                        Mempool& mempool, quill::Logger* logger)
     : socket_(io_context, udp::endpoint(udp::v4(), port)),
       mempool_(mempool), logger_{logger} {
-  LOG_DEBUG(Udp_server::logger_, "Udp_server()");
+  LOG_INFO(logger_, "Udp_server()");
 
   // Get mempool chunk size
   auto chunk_size_ = (mempool_.stats()).chunk_sz;
@@ -30,7 +30,7 @@ Udp_server::Udp_server(asio::io_context& io_context, short port,
 
 // Destructor()
 Udp_server::~Udp_server() {
-  LOG_DEBUG(Udp_server::logger_, "~Udp_server()");
+  LOG_INFO(logger_, "~Udp_server()");
   socket_.close();
 }
 

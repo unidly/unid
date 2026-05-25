@@ -21,14 +21,14 @@ namespace fs = std::filesystem;
 Config::Config(quill::Logger* logger) : logger_{logger} {
   try {
     config_ = toml::parse_file(Config::get_unid_filepath());
-    LOG_INFO(logger, "Config object created");
+    LOG_INFO(logger_, "Config()");
   } catch (const toml::parse_error& err) {
-    LOG_CRITICAL(logger, "Config object creation failed");
+    LOG_CRITICAL(logger_, "Config() failed with parse error.");
     throw std::runtime_error(err);
   }
 }
 
-Config::~Config() { LOG_INFO(logger_, "Config object destroyed"); }
+Config::~Config() { LOG_INFO(logger_, "~Config()"); }
 
 /**
  * @brief Returns the filepath of unid.toml configuration file

@@ -34,6 +34,7 @@ public:
    * @brief Constructor
    *
    * TODO Add support for ipv6 addressing
+   * TODO Replace "port" with "service" for use of fqdn and port
    *
    * @param io_context Asio event loop manager for asynch ops
    * @param port Port number
