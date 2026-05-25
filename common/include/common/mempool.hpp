@@ -45,6 +45,8 @@ public:
    * @param pool_sz Number of chunks in the pool
    * @param chunk_sz Size in bytes of each chunk
    * @param logger Pointer to the logger object
+   *
+   * @throws std::runtime_error Thrown if could not allocate memry for pool.
    */
   Mempool(std::size_t pool_sz, std::size_t chunk_sz, quill::Logger* logger);
 
@@ -56,18 +58,26 @@ public:
   ~Mempool();
 
   /**
-   * @brief Allocate a chunk of memory for the caller to use
+   * @brief Allocate a chunk of memory
    *
    * @return a pointer to a chunk of memory
+   * @throws std::runtime_error Thrown if no chunks available to allocate.
    */
-  void* alloc() { return pool_alloc(Mempool::pool_); }
+  char* alloc() {
+    auto chunk = pool_alloc(Mempool::pool_);
+    if (chunk == NULL) {
+      LOG_CRITICAL(logger_, "Mempool couldn't allocate chunk");
+      throw std::runtime_error("Mempool couldn't allocate chunk");
+    }
+    return static_cast<char*>(chunk);
+  }
 
   /**
-   * @brief Frees a chunk after the caller doesn't need it anymore
+   * @brief Frees a chunk
    *
    * @param ptr Pointer to the chunk to free
    */
-  void free(void* ptr) { pool_free(Mempool::pool_, ptr); }
+  void free(char* ptr) { pool_free(Mempool::pool_, (void*)ptr); }
 
   /**
    * @brief Increase the number of chunks in the pool
@@ -96,7 +106,7 @@ public:
    *
    * @returns Mempool statistics (see structure)
    */
-  struct Mempool_stats stats();
+  Mempool_stats stats();
 
 private:
   quill::Logger* logger_; /**< Logger object */

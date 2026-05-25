@@ -40,7 +40,7 @@ TEST_CASE("alloc/free", "[mempool]") {
   std::size_t pool_sz(16);
   Mempool mempool{pool_sz, chunk_sz, global_logger_a};
 
-  void* data = mempool.alloc();
+  char* data = mempool.alloc();
   Mempool_stats stats = mempool.stats();
   REQUIRE(stats.available == 15);
 
@@ -82,16 +82,15 @@ TEST_CASE("alloc when no chunks available", "[mempool]") {
   Mempool mempool{pool_sz, chunk_sz, global_logger_a};
 
   // All of these allocations result in a valid pointer
-  void* data1 = mempool.alloc();
-  void* data2 = mempool.alloc();
-  void* data3 = mempool.alloc();
-  void* data4 = mempool.alloc();
-  void* data5 = mempool.alloc();
+  char* data1 = mempool.alloc();
+  char* data2 = mempool.alloc();
+  char* data3 = mempool.alloc();
+  char* data4 = mempool.alloc();
+  char* data5 = mempool.alloc();
   REQUIRE(data5 != NULL);
 
   // This allocation fails
-  void* data6 = mempool.alloc();
-  REQUIRE(data6 == NULL);
+  REQUIRE_THROWS(mempool.alloc());
 }
 
 // clang-format on

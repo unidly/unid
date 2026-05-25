@@ -8,7 +8,4 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-namespace unid {
-
-}
 #endif // MAIN_H

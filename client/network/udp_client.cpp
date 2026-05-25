@@ -10,49 +10,71 @@
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
+#include "common/mempool.hpp"
+
 #include <asio.hpp>
+#include <cstddef>
+#include <iostream>
 
 // Constructor()
-Udp_client::Udp_client(asio::io_context &io_context, const std::string &host,
-                       const std::string &service, quill::Logger *logger)
-    : io_context_(io_context), socket_(io_context), logger_{logger} {
+Udp_client::Udp_client(asio::io_context& io_context, const std::string& host,
+                       const std::string& service, Mempool& mempool,
+                       quill::Logger* logger)
+    : io_context_(io_context), socket_(io_context),
+      mempool_(mempool), logger_{logger} {
+  LOG_DEBUG(logger_, "Udp_client()");
+
+  // Get mempool chunk size
+  auto chunk_size_ = (mempool_.stats()).chunk_sz;
+
   // Define the endpoint
   udp::resolver resolver(io_context_);
   udp::endpoint remote_endpoint_ =
       *resolver.resolve(udp::v4(), host, service).begin();
 
-  // Open the socket
+  // Open the socket and start listening
   socket_.open(udp::v4());
+  async_receive();
 }
 
 // Destructor()
-Udp_client::~Udp_client() { socket_.close(); }
-
-// receive_from()
-void Udp_client::receive_from(char *buffer, size_t length) {
-  Udp_client::rx_buffer_ = buffer;
-  Udp_client::rx_length_ = length;
-  Udp_client::async_receive(); // Start the receiver
-}
-
-// send_to()
-void Udp_client::send_to(const char *buffer, size_t length,
-                         const struct sockaddr_in &client_address) {
-  Udp_client::tx_buffer_ = buffer;
-  Udp_client::tx_length_ = length;
-  Udp_client::async_receive(); // Start the receiver
+Udp_client::~Udp_client() {
+  LOG_DEBUG(logger_, "~Udp_client()");
+  socket_.close();
 }
 
 // async_receive()
 void Udp_client::async_receive() {
+  auto chunk = mempool_.alloc();
   socket_.async_receive_from(
-      asio::buffer(Udp_client::rx_buffer_, Udp_client::rx_length_),
-      Udp_client::remote_endpoint_, Udp_client::async_receive_callback_);
+      asio::buffer(chunk, chunk_size_), remote_endpoint_,
+      [this, chunk](std::error_code ec, std::size_t bytes_received) {
+        if (!ec) {
+          // Copy data into the application buffer
+          std::cout << "async_receive() complete" << std::endl;
+          std::cout << "Receive buffer" << std::endl;
+          for (int i = 0; i < bytes_received; ++i) {
+            std::cout << std::hex << std::setw(2) << std::setfill('0')
+                      << static_cast<int>(chunk[i]) << std::endl;
+          }
+          mempool_.free(chunk); // Free the chunk after used
+          async_receive();
+        } else {
+          // Handle error code
+        }
+      });
 }
 
 // async_send()
-void Udp_client::async_send() {
-  socket_.async_send_to(asio::buffer(tx_buffer_, Udp_client::tx_length_),
-                        Udp_client::remote_endpoint_,
-                        Udp_client::async_send_callback_);
+void Udp_client::async_send(char* chunk, size_t length) {
+  socket_.async_send_to(
+      asio::buffer(chunk, length), remote_endpoint_,
+      [this, chunk](std::error_code ec, std::size_t byte_received) {
+        if (!ec) {
+          std::cout << "async_send() complete" << std::endl;
+          mempool_.free(chunk);
+        } else {
+          // Handle error code
+        }
+      });
 }

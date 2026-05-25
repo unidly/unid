@@ -8,10 +8,13 @@
 #ifndef UDP_CLIENT_HPP
 #define UDP_CLIENT_HPP
 
-#include "asio.hpp"
+#include "quill/LogMacros.h"
 #include "quill/Logger.h"
 
-#include <cstdint>    // uintXX_t
+#include "common/mempool.hpp"
+
+#include <asio.hpp>
+#include <cstddef>    // std::size_t
 #include <functional> // std::function()
 
 using asio::ip::udp;
@@ -24,110 +27,43 @@ using asio::ip::udp;
  */
 class Udp_client {
 public:
-  using Callback_type = std::function<void(const asio::error_code &error,
-                                           std::size_t bytes_transferred)>;
-
   /**
    * @brief Constructor
    *
    * TODO Add support for ipv6 addressing
    *
    * @param io_context Asio event loop manager for asynch ops
-   * @param host IPv4 address of the server
+   * @param host IPv4 address or FQDN of the server
    * @param service Port number or well known service name
+   * @param mempool Memory pool object
    * @param logger Global logger pointer
    */
-  Udp_client(asio::io_context &io_context, const std::string &host,
-             const std::string &service, quill::Logger *logger);
+  Udp_client(asio::io_context& io_context, const std::string& host,
+             const std::string& service, Mempool& mempool,
+             quill::Logger* logger);
 
   ~Udp_client();
 
   /**
-   * @brief Set a callback for the receive datagram
+   * @brief Start an asynch receive operaton
    *
-   * This callback is called when a datagram has been received. The caller
-   * passes the data on, and takes care of buffer management as needed
-   * (typically retirns it to the buffer pool).
+   * This function allocates a buffer from the mempool, and then starts
+   * an asynchronous receive operation. When data is received, a callback
+   * function (lambda) gets the data and copies into the application
+   * buffer that is passed to the "receiving" funtion through its callback.
    *
-   * @param cb The callback function, lambda or functor
-   */
-  void set_async_receive_callback(Callback_type cb) {
-    async_receive_callback_ = cb;
-  }
-
-  /**
-   * @brief Set a callback for the send datagram
+   * and then frees the allocated buffer back to the mempool
    *
-   * This callback is called when the datagram has been sent. The caller
-   * passes the status on, and takes care of buffer management as needed
-   * (typically returns it to the buffer pool).
-   *
-   * The callback does not indicate that the datagram was received, only that
-   * it was sent!
-   *
-   * @param cb The callback function, lambda or functor
-   */
-  void set_async_send_callback(Callback_type cb) { async_send_callback_ = cb; }
-
-  /**
-   * @brief Set up to receive a udp datagram
-   *
-   * The caller supplies a buffer with its length to the Udp Client, and
-   * starts an anynchrouous receive operation by calling asynch_receive().
-   *
-   * When asynch_receive() receives a datagram, it executes a callback to
-   * the caller with the data and address information.
-   *
-   * The caller provides the buffer for storing the datagram. The caller must
-   * not freee or destroy the buffer until it is returned to the callback.
-   *
-   * Note that if the datagram is larger than the buffer, then the data is
-   * truncated at the buffer length and the remaining data is lost forever.
-   * The caller must take care to provide buffers large enough to receive
-   * the datagram.
-   *
-   * @param buffer A buffer supplied by the caller
-   * @param length The size of the buffer
-   */
-  void receive_from(char *buffer, std::size_t length);
-
-  /**
-   * @brief Set up to send a udp datagram
-   *
-   * The caller supplies a buffer with data and the length of the data to
-   * the UDP Client. The destination is also provide with the socaddr_in
-   * member structure.
-   *
-   * This member function calls asynch_send() that is responsible for
-   * sending the buffer data to the client. When asynch_send() is done, it
-   * calls the callback to notify the caller.
-   *
-   * @param buffer A caller supplied buffer with data to send
-   * @para length The length of data in bytes
-   * @param client_address The address info required to deliver the datagram
-   */
-  void send_to(const char *buffer, std::size_t length,
-               const struct sockaddr_in &client_address);
-
-private:
-  // Private member functions
-  /**
-   * @ brief Start an asynch receive operaton
-   *
-   * Asio implements an asynchronous interface that allows the UDP server
-   * to wait for a datagram from a client. When a datagram is recieved, a
-   * callback function notifies the caller who consumes the data and frees
-   * the memory chunk container of the data.
-   *
-   * The receve function is (re)started whenever a call to receive_from is
-   * made. It is not started by the constructor.
+   * Important note: This function is first called by the constructor. To
+   * maintain the client in "receive" mode, it is important that the callback
+   * handler restart "receive" mode by calling this function
    */
   void async_receive();
 
   /**
    * @brief Start an asynch send operation
    *
-   * Asio implements an asynchonous interface that allows the UDP serve to
+   * Asio implements an asynchonous interface that allows the UDP client to
    * send a UPD datagram, and be notified when it has been sent. This private
    * member function is called by send_to() and then operates asychronously.
    *
@@ -142,20 +78,22 @@ private:
    *
    * @param length The length of the data to be transmitted
    */
-  void async_send();
+  void async_send(char* buffer, size_t length);
 
+  unsigned short get_remote_port() { return remote_endpoint_.port(); }
+
+  std::string get_remote_address() {
+    return remote_endpoint_.address().to_string();
+  }
+
+private:
   // Private member variables
-  quill::Logger *logger_;
-  asio::io_context &io_context_;
-  udp::socket socket_;
-  udp::endpoint remote_endpoint_;
-  Callback_type async_receive_callback_;
-  Callback_type async_send_callback_;
-
-  char *rx_buffer_;       /**< Pointer to the supplied receive data buffer */
-  const char *tx_buffer_; /**< Pointer to the supplied transmit data buffer */
-  std::size_t rx_length_; /**< Total length of rx buffer */
-  std::size_t tx_length_; /**< Actual length of tx data */
+  quill::Logger* logger_;         /**< Access to logger */
+  asio::io_context& io_context_;  /**< Access to io_context */
+  udp::socket socket_;            /**< UDP socket */
+  udp::endpoint remote_endpoint_; /**< Server endpoint */
+  Mempool& mempool_;              /**< Memory pool object */
+  std::size_t chunk_size_;        /**< Size of a chunk buffer for rcv ops */
 };
 
 #endif // UDP_CLIENT_HPP

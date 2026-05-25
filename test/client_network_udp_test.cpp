@@ -5,6 +5,7 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 
+#include "common/mempool.hpp"
 #include "common/quill.hpp"
 #include "quill/LogMacros.h"
 #include "quill/Logger.h"
@@ -14,7 +15,7 @@
 #include <iostream>
 #include <thread>
 
-extern quill::Logger *global_logger_a;
+extern quill::Logger* global_logger_a;
 
 // clang-format off
 
@@ -22,11 +23,12 @@ extern quill::Logger *global_logger_a;
 TEST_CASE("Network Udp Client Tests", "[constructor]") {
   // Set the logger
   setup_quill("unid_test.log");
+  Mempool mempool(16, 1024, global_logger_a);;
 
   asio::io_context io_context;
   std::string host("127.0.0.1");
   std::string service("12346");
-  Udp_client udp_client(io_context, host, service, global_logger_a);
+  Udp_client udp_client(io_context, host, service, mempool, global_logger_a);
 
   // Run in a separate thread
   std::thread io_thread([&io_context]() {

@@ -35,7 +35,6 @@ Mempool::~Mempool() {
 bool Mempool::expand(std::size_t extra_sz) {
   bool status = pool_expand(pool_, extra_sz);
   if (!status) {
-    // Can't expand the pool - not enough memory!
     pool_destroy(pool_);
     LOG_CRITICAL(logger_, "Failed to expand mempool");
     throw std::runtime_error("Failed to expand mempool");
